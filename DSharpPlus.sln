@@ -46,6 +46,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{1092E215
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSharpPlus.Tools.AutoUpdateChannelDescription", "tools\AutoUpdateChannelDescription\DSharpPlus.Tools.AutoUpdateChannelDescription.csproj", "{DE29AE1F-012F-45C1-96D9-AADC037CCA51}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSharpPlus.Commands", "DSharpPlus.Commands\DSharpPlus.Commands.csproj", "{A77E669F-8A2A-4665-93B9-4D61B33CECE4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{ECAD9735-8772-422E-8812-8AB5C554CD7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECAD9735-8772-422E-8812-8AB5C554CD7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECAD9735-8772-422E-8812-8AB5C554CD7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A77E669F-8A2A-4665-93B9-4D61B33CECE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A77E669F-8A2A-4665-93B9-4D61B33CECE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A77E669F-8A2A-4665-93B9-4D61B33CECE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A77E669F-8A2A-4665-93B9-4D61B33CECE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,5 @@
-﻿using DSharpPlus.Entities;
+﻿using System.Threading.Tasks;
+using DSharpPlus.Entities;
 
 namespace DSharpPlus.Commands;
 
@@ -10,8 +11,14 @@ namespace DSharpPlus.Commands;
 /// </remarks>
 public interface ICommandContext
 {
-    public DiscordInteraction? Interaction { get; set; }
-    public DiscordMessage? Message { get; set; }
+    public DiscordClient Client { get; init; }
 
-    public CommandData CommandData { get; set; }
+    public DiscordChannel Channel { get; init; }
+    public DiscordUser User { get; init; }
+    public DiscordGuild? Guild { get; init; }
+    public DiscordMember? Member { get; init; }
+
+    public Task RespondAsync(DiscordMessageBuilder response);
+    public Task DeferAsync();
+    public Task FollowUpAsync(DiscordMessageBuilder response);
 }
