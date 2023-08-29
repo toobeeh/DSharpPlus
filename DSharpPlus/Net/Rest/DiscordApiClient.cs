@@ -112,7 +112,7 @@ namespace DSharpPlus.Net
             var guild = ret.Channel?.Guild;
 
             //If this is a webhook, it shouldn't be in the user cache.
-            if (author.IsBot && int.Parse(author.Discriminator) == 0)
+            if (author.IsBot && author.Discriminator == "0000")
             {
                 ret.Author = new DiscordUser(author) { Discord = this._discord };
             }
@@ -1767,7 +1767,7 @@ namespace DSharpPlus.Net
             var url = Utilities.GetApiUriFor(path);
             var res = await this.DoRequestAsync(this._discord, bucket, url, RestRequestMethod.POST, route, payload: DiscordJson.SerializeObject(pld));
 
-            var ret = JsonConvert.DeserializeObject<DiscordDmChannel>(res.Response);
+            var ret = DiscordJson.ToDiscordObject<DiscordDmChannel>(res.Response);
             ret.Discord = this._discord;
 
             return ret;
