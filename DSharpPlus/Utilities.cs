@@ -321,6 +321,12 @@ public static partial class Utilities
         key = kvp.Key;
         value = kvp.Value;
     }
+    
+    internal static string Base64Encode(string plainText) 
+    {
+        byte[] plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+        return System.Convert.ToBase64String(plainTextBytes);
+    }
 
     [GeneratedRegex("<@(\\d+)>", RegexOptions.ECMAScript)]
     private static partial Regex UserMentionRegex();
