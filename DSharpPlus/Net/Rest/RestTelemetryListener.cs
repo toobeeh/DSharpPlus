@@ -11,11 +11,8 @@ internal class RestTelemetryListener: TelemetryListener
     private readonly ConcurrentDictionary<Guid, RequestTelemetry> _telemetryData = new();
     private readonly ILogger _logger;
     
-    public RestTelemetryListener(ILogger logger)
-    {
-        _logger = logger;
-    }
-    
+    public RestTelemetryListener(ILogger logger) => _logger = logger;
+
     public override void Write<TResult, TArgs>(in TelemetryEventArguments<TResult, TArgs> args)
     {
         if(args.Event.EventName != "RatelimitDelay")
@@ -49,10 +46,12 @@ internal class RestTelemetryListener: TelemetryListener
        
         if (!_telemetryData.TryGetValue(guid, out RequestTelemetry telemetry))
         {
-            telemetry = new RequestTelemetry();
-            telemetry.LastUpdate = DateTime.UtcNow;
-            telemetry.TotalDelay += delay;
-            telemetry.DelayCount = 1;
+            telemetry = new RequestTelemetry
+            {
+                LastUpdate = DateTime.UtcNow,
+                TotalDelay = delay,
+                DelayCount = 1
+            };
             _telemetryData.TryAdd(guid, telemetry);
             return;
         }

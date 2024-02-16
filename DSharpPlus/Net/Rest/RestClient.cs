@@ -120,8 +120,11 @@ internal sealed partial class RestClient : IDisposable
         try
         {
             await this.globalRateLimitEvent.WaitAsync();
+            
+            Guid operationId = Guid.NewGuid();
+            string operationIdString = operationId.ToString();
 
-            ResilienceContext context = ResilienceContextPool.Shared.Get();
+            ResilienceContext context = ResilienceContextPool.Shared.Get(operationIdString);
 
             context.Properties.Set(new("route"), request.Route);
             context.Properties.Set(new("exempt-from-global-limit"), request.IsExemptFromGlobalLimit);

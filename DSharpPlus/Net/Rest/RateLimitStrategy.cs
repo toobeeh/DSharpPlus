@@ -164,7 +164,7 @@ internal class RateLimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
         string waitingForRoute = scope == "route" ? " for route hash" : "";
         
         TimeSpan delay = retry - DateTime.UtcNow;
-        this._telemetry.Report(this.delayEvent, context, delay);
+        this._telemetry.Report(this.delayEvent, context, delay.TotalMilliseconds);
         logger.LogDebug
         (
             LoggerEvents.RatelimitPreemptive,
