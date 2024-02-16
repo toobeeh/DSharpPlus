@@ -29,7 +29,7 @@ internal sealed partial class RestClient : IDisposable
     private readonly AsyncManualResetEvent globalRateLimitEvent;
     private readonly ResiliencePipeline<HttpResponseMessage> pipeline;
     //private readonly RateLimitStrategy rateLimitStrategy;
-    private readonly RestTelemetryListener telemetryListener = new();
+    private readonly RestTelemetryListener telemetryListener;
 
     private volatile bool _disposed;
 
@@ -79,6 +79,7 @@ internal sealed partial class RestClient : IDisposable
         this.httpClient.BaseAddress = new(Endpoints.BASE_URI);
 
         this.globalRateLimitEvent = new AsyncManualResetEvent(true);
+        telemetryListener = new(this.logger);
         
         TelemetryOptions telemetryOptions = new();
         telemetryOptions.TelemetryListeners.Add(this.telemetryListener);
