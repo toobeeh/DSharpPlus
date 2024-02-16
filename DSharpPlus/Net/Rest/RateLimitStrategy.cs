@@ -6,11 +6,15 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
+
 using Microsoft.Extensions.Logging;
 
 using Polly;
+using Polly.Telemetry;
 
 namespace DSharpPlus.Net;
+
+
 
 internal class RateLimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDisposable
 {
@@ -19,13 +23,16 @@ internal class RateLimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
     private readonly ConcurrentDictionary<string, string> routeHashes = [];
 
     private readonly ILogger logger;
+    private readonly ResilienceStrategyTelemetry _telemetry;
     private readonly int waitingForHashMilliseconds;
+    private readonly ResilienceEvent delayEvent = new(ResilienceEventSeverity.Debug, "RatelimitDelay");
 
     private bool cancel = false;
 
-    public RateLimitStrategy(ILogger logger, int waitingForHashMilliseconds = 200)
+    public RateLimitStrategy(ILogger logger, ResilienceStrategyTelemetry telemetry, int waitingForHashMilliseconds = 200)
     {
         this.logger = logger;
+        this._telemetry = telemetry;
         this.waitingForHashMilliseconds = waitingForHashMilliseconds;
 
         _ = CleanAsync();
@@ -59,7 +66,7 @@ internal class RateLimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
 
         if (!exemptFromGlobalLimit && !this.globalBucket.CheckNextRequest())
         {
-            return this.SynthesizeInternalResponse(route, globalBucket.Reset, "global");
+            return this.SynthesizeInternalResponse(route, globalBucket.Reset, "global", context);
         }
 
         if (!this.routeHashes.TryGetValue(route, out string? hash))
@@ -93,7 +100,8 @@ internal class RateLimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
             (
                 route,
                 instant + TimeSpan.FromMilliseconds(waitingForHashMilliseconds),
-                "route"
+                "route",
+                context
             );
         }
         else
@@ -110,7 +118,7 @@ internal class RateLimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
 
             if (!bucket.CheckNextRequest())
             {
-                return this.SynthesizeInternalResponse(route, bucket.Reset, "bucket");
+                return this.SynthesizeInternalResponse(route, bucket.Reset, "bucket", context);
             }
 
             logger.LogTrace
@@ -120,6 +128,9 @@ internal class RateLimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
                 bucket.remaining, 
                 bucket.reserved
             );
+            
+            // report to telemetry that this request had no ratelimit delay
+            this._telemetry.Report(this.delayEvent, context, 0);
 
             Outcome<HttpResponseMessage> outcome;
 
@@ -148,10 +159,12 @@ internal class RateLimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
         }
     }
 
-    private Outcome<HttpResponseMessage> SynthesizeInternalResponse(string route, DateTime retry, string scope)
+    private Outcome<HttpResponseMessage> SynthesizeInternalResponse(string route, DateTime retry, string scope, ResilienceContext context)
     {
         string waitingForRoute = scope == "route" ? " for route hash" : "";
-
+        
+        TimeSpan delay = retry - DateTime.UtcNow;
+        this._telemetry.Report(this.delayEvent, context, delay);
         logger.LogDebug
         (
             LoggerEvents.RatelimitPreemptive,

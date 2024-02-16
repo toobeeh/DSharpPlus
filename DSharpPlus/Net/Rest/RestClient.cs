@@ -13,6 +13,8 @@ using Polly;
 
 namespace DSharpPlus.Net;
 
+using Polly.Telemetry;
+
 /// <summary>
 /// Represents a client used to make REST requests.
 /// </summary>
@@ -26,7 +28,8 @@ internal sealed partial class RestClient : IDisposable
     private readonly ILogger logger;
     private readonly AsyncManualResetEvent globalRateLimitEvent;
     private readonly ResiliencePipeline<HttpResponseMessage> pipeline;
-    private readonly RateLimitStrategy rateLimitStrategy;
+    //private readonly RateLimitStrategy rateLimitStrategy;
+    private readonly RestTelemetryListener telemetryListener = new();
 
     private volatile bool _disposed;
 
@@ -76,8 +79,10 @@ internal sealed partial class RestClient : IDisposable
         this.httpClient.BaseAddress = new(Endpoints.BASE_URI);
 
         this.globalRateLimitEvent = new AsyncManualResetEvent(true);
-
-        this.rateLimitStrategy = new(logger, waitingForHashMilliseconds);
+        
+        TelemetryOptions telemetryOptions = new();
+        telemetryOptions.TelemetryListeners.Add(this.telemetryListener);
+        
 
         ResiliencePipelineBuilder<HttpResponseMessage> builder = new();
 
@@ -91,8 +96,8 @@ internal sealed partial class RestClient : IDisposable
                 MaxRetryAttempts = maxRetries
             }
         )
-        .AddStrategy(_ => rateLimitStrategy, new RateLimitOptions());
-
+        .AddStrategy(context => new RateLimitStrategy(logger, context.Telemetry, waitingForHashMilliseconds), new RateLimitOptions())
+        .ConfigureTelemetry(telemetryOptions);
         this.pipeline = builder.Build();
     }
 
@@ -199,7 +204,7 @@ internal sealed partial class RestClient : IDisposable
         this._disposed = true;
 
         this.globalRateLimitEvent.Reset();
-        this.rateLimitStrategy.Dispose();
+        //this.rateLimitStrategy.Dispose();
 
         try
         {
