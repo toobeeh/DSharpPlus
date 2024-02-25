@@ -6,7 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using DSharpPlus.Exceptions;
-using DSharpPlus.Net.Rest.Ratelimiting;
+using DSharpPlus.Net.Ratelimiting;
+
 using Microsoft.Extensions.Logging;
 
 using Polly;
@@ -26,7 +27,7 @@ internal sealed partial class RestClient : IDisposable
     private readonly ILogger logger;
     private readonly AsyncManualResetEvent globalRateLimitEvent;
     private readonly ResiliencePipeline<HttpResponseMessage> pipeline;
-    private readonly RateLimitStrategy rateLimitStrategy;
+    private readonly RatelimitStrategy rateLimitStrategy;
 
     private volatile bool _disposed;
 
@@ -91,7 +92,7 @@ internal sealed partial class RestClient : IDisposable
                 MaxRetryAttempts = maxRetries
             }
         )
-        .AddStrategy(_ => rateLimitStrategy, new RateLimitOptions());
+        .AddStrategy(_ => rateLimitStrategy, new RatelimitOptions());
 
         this.pipeline = builder.Build();
     }

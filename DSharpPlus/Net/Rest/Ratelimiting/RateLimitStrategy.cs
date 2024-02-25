@@ -12,10 +12,10 @@ using Polly;
 
 namespace DSharpPlus.Net.Ratelimiting;
 
-internal class RateLimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDisposable
+internal class RatelimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDisposable
 {
-    private readonly RateLimitBucket globalBucket = new(50, 50, DateTime.UtcNow.AddSeconds(1));
-    private readonly ConcurrentDictionary<string, RateLimitBucket> buckets = [];
+    private readonly RatelimitBucket globalBucket = new(50, 50, DateTime.UtcNow.AddSeconds(1));
+    private readonly ConcurrentDictionary<string, RatelimitBucket> buckets = [];
     private readonly ConcurrentDictionary<string, string> routeHashes = [];
 
     private readonly ILogger logger;
@@ -23,7 +23,7 @@ internal class RateLimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
 
     private bool cancel = false;
 
-    public RateLimitStrategy(ILogger logger, int waitingForHashMilliseconds = 200)
+    public RatelimitStrategy(ILogger logger, int waitingForHashMilliseconds = 200)
     {
         this.logger = logger;
         this.waitingForHashMilliseconds = waitingForHashMilliseconds;
@@ -118,7 +118,7 @@ internal class RateLimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
         }
         else
         {
-            RateLimitBucket bucket = this.buckets.GetOrAdd(hash, _ => new());
+            RatelimitBucket bucket = this.buckets.GetOrAdd(hash, _ => new());
 
             logger.LogTrace
             (
@@ -200,7 +200,7 @@ internal class RateLimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
         {
             string newHash = hashHeader?.Single()!;
 
-            if (!RateLimitBucket.TryExtractRateLimitBucket(response.Headers, out RateLimitCandidateBucket extracted))
+            if (!RatelimitBucket.TryExtractRateLimitBucket(response.Headers, out RatelimitCandidateBucket extracted))
             {
                 return;
             }
@@ -210,7 +210,7 @@ internal class RateLimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
             }
             else
             {
-                if (this.buckets.TryGetValue(newHash, out RateLimitBucket? oldBucket))
+                if (this.buckets.TryGetValue(newHash, out RatelimitBucket? oldBucket))
                 {
                     oldBucket.UpdateBucket(extracted.Maximum, extracted.Remaining, extracted.Reset);
                 }

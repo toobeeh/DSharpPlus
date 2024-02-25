@@ -10,7 +10,7 @@ namespace DSharpPlus.Net.Ratelimiting;
 /// <summary>
 /// Represents a rate limit bucket.
 /// </summary>
-internal sealed class RateLimitBucket
+internal sealed class RatelimitBucket
 {
     /// <summary>
     /// Gets the number of uses left before pre-emptive rate limit is triggered.
@@ -32,7 +32,7 @@ internal sealed class RateLimitBucket
     internal int remaining;
     internal int reserved = 0;
 
-    public RateLimitBucket
+    public RatelimitBucket
     (
         int maximum,
         int remaining,
@@ -44,7 +44,7 @@ internal sealed class RateLimitBucket
         this.Reset = reset;
     }
 
-    public RateLimitBucket()
+    public RatelimitBucket()
     {
         this.maximum = 1;
         this.remaining = 1;
@@ -74,7 +74,7 @@ internal sealed class RateLimitBucket
     (
         HttpResponseHeaders headers,
 
-        out RateLimitCandidateBucket bucket
+        out RatelimitCandidateBucket bucket
     )
     {
         bucket = default;
