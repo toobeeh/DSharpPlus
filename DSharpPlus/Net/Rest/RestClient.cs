@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using DSharpPlus.Exceptions;
-
+using DSharpPlus.Net.Rest.Ratelimiting;
 using Microsoft.Extensions.Logging;
 
 using Polly;

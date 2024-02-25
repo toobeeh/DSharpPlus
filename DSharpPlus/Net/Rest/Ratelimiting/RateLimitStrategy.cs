@@ -7,9 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.Extensions.Logging;
+
 using Polly;
 
-namespace DSharpPlus.Net;
+namespace DSharpPlus.Net.Ratelimiting;
 
 internal class RateLimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDisposable
 {
@@ -48,7 +49,7 @@ internal class RateLimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
 
         // get trace id for logging
         Ulid traceId = default;
-        if (context.Properties.TryGetValue(new("trace-id"), out Ulid tid) )
+        if (context.Properties.TryGetValue(new("trace-id"), out Ulid tid))
         {
             traceId = tid;
         }
@@ -56,7 +57,7 @@ internal class RateLimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
         {
             traceId = Ulid.Empty;
         }
-        
+
 
         // get global limit
         bool exemptFromGlobalLimit = false;
@@ -174,11 +175,11 @@ internal class RateLimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
         string waitingForRoute = scope == "route" ? " for route hash" : "";
 
         string traceIdString = "";
-        if(this.logger.IsEnabled(LogLevel.Trace))
+        if (this.logger.IsEnabled(LogLevel.Trace))
         {
             traceIdString = $"Request ID:{traceId}: ";
         }
-        
+
         logger.LogDebug
         (
             LoggerEvents.RatelimitPreemptive,

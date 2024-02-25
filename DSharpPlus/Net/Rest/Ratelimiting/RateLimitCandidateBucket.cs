@@ -1,4 +1,4 @@
-namespace DSharpPlus.Net;
+namespace DSharpPlus.Net.Ratelimiting;
 
 using System;
 
@@ -7,6 +7,6 @@ using System;
 /// </summary>
 internal readonly record struct RateLimitCandidateBucket(int Maximum, int Remaining, DateTime Reset)
 {
-    public RateLimitBucket ToFullBucket() 
+    public RateLimitBucket ToFullBucket()
         => new(this.Maximum, this.Remaining, this.Reset);
 }

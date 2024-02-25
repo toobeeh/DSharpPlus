@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading;
 
-namespace DSharpPlus.Net;
+namespace DSharpPlus.Net.Ratelimiting;
 
 /// <summary>
 /// Represents a rate limit bucket.
@@ -139,6 +138,6 @@ internal sealed class RateLimitBucket
         this.Reset = reset;
     }
 
-    internal void CancelReservation() 
+    internal void CancelReservation()
         => Interlocked.Decrement(ref this.reserved);
 }
