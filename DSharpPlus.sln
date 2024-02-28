@@ -48,9 +48,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSharpPlus.Tools.ShardedEve
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSharpPlus.Commands", "DSharpPlus.Commands\DSharpPlus.Commands.csproj", "{0CAFE4E5-4742-417B-9279-BEE069D9C0D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSharpPlus.Analyzer", "DSharpPlus.Analyzer\DSharpPlus.Analyzer\DSharpPlus.Analyzer.csproj", "{F36E1EDE-17FC-465D-BA4D-5AB7521A29D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSharpPlus.Analyzers", "DSharpPlus.Analyzers\DSharpPlus.Analyzers\DSharpPlus.Analyzers.csproj", "{F36E1EDE-17FC-465D-BA4D-5AB7521A29D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSharpPlus.Analyzer.Test", "DSharpPlus.Analyzer\DSharpPlus.Analyzer.Test\DSharpPlus.Analyzer.Test.csproj", "{4F9D5B7D-DB1D-42A5-BB53-D4490543D597}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSharpPlus.Analyzers.Test", "DSharpPlus.Analyzers\DSharpPlus.Analyzers.Test\DSharpPlus.Analyzers.Test.csproj", "{4F9D5B7D-DB1D-42A5-BB53-D4490543D597}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
