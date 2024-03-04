@@ -206,7 +206,7 @@ public sealed partial class DiscordClient
                 gid = (ulong)dat["guild_id"];
                 usr = dat["user"].ToDiscordObject<TransportUser>();
 
-                if (!this._guilds.TryGetValue(gid, out DiscordGuild? value))
+                if (!this._guilds.TryGetValue(gid, out DiscordGuild? discordGuild))
                 {
                     // discord fires this event inconsistently if the current user leaves a guild.
                     if (usr.Id != this.CurrentUser.Id)
@@ -217,7 +217,7 @@ public sealed partial class DiscordClient
                     return;
                 }
 
-                await this.OnGuildMemberRemoveEventAsync(usr, value);
+                await this.OnGuildMemberRemoveEventAsync(usr, discordGuild);
                 break;
 
             case "guild_member_update":
