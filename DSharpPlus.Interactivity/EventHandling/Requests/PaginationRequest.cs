@@ -44,11 +44,7 @@ namespace DSharpPlus.Interactivity.EventHandling
             this._behaviour = behaviour;
             this._emojis = emojis;
 
-            this._pages = new List<Page>();
-            foreach (Page p in pages)
-            {
-                this._pages.Add(p);
-            }
+            this._pages = [.. pages];
         }
 
         public int PageCount => this._pages.Count;

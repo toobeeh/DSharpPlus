@@ -38,7 +38,7 @@ internal sealed class Opus : IDisposable
         Interop.OpusSetEncoderOption(this.Encoder, OpusControl.SetInBandFec, 1);
         Interop.OpusSetEncoderOption(this.Encoder, OpusControl.SetBitrate, 131072);
 
-        this.ManagedDecoders = new List<OpusDecoder>();
+        this.ManagedDecoders = [];
     }
 
     public void Encode(ReadOnlySpan<byte> pcm, ref Span<byte> target)

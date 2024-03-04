@@ -80,7 +80,7 @@ public class DiscordWebhookClient
         TimeSpan parsedTimeout = timeout ?? TimeSpan.FromSeconds(10);
 
         this._apiclient = new DiscordApiClient(proxy, parsedTimeout, this.Logger);
-        this._hooks = new List<DiscordWebhook>();
+        this._hooks = [];
         this.Webhooks = new ReadOnlyCollection<DiscordWebhook>(this._hooks);
     }
 
@@ -247,8 +247,8 @@ public class DiscordWebhookClient
     /// <returns></returns>
     public async Task<Dictionary<DiscordWebhook, DiscordMessage>> BroadcastMessageAsync(DiscordWebhookBuilder builder)
     {
-        List<DiscordWebhook> deadhooks = new List<DiscordWebhook>();
-        Dictionary<DiscordWebhook, DiscordMessage> messages = new Dictionary<DiscordWebhook, DiscordMessage>();
+        List<DiscordWebhook> deadhooks = [];
+        Dictionary<DiscordWebhook, DiscordMessage> messages = [];
 
         foreach (DiscordWebhook hook in this._hooks)
         {

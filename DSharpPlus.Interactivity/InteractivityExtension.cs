@@ -861,7 +861,7 @@ public class InteractivityExtension : BaseExtension
         PaginationBehaviour bhv = behaviour ?? this.Config.PaginationBehaviour;
         ButtonPaginationBehavior del = deletion ?? this.Config.ButtonBehavior;
         PaginationButtons bts = buttons ?? this.Config.PaginationButtons;
-        disabledButtons ??= new List<PaginationButtonType>();
+        disabledButtons ??= [];
 
         bts = new(bts); // Copy //
 
@@ -992,7 +992,7 @@ public class InteractivityExtension : BaseExtension
             throw new ArgumentException("You must provide a string that is not null or empty!");
         }
 
-        List<Page> result = new List<Page>();
+        List<Page> result = [];
         List<string> split;
 
         switch (splittype)
@@ -1004,7 +1004,7 @@ public class InteractivityExtension : BaseExtension
             case SplitType.Line:
                 string[] subsplit = input.Split('\n');
 
-                split = new List<string>();
+                split = [];
                 string s = "";
 
                 for (int i = 0; i < subsplit.Length; i++)
@@ -1050,7 +1050,7 @@ public class InteractivityExtension : BaseExtension
 
         DiscordEmbedBuilder embed = embedbase ?? new DiscordEmbedBuilder();
 
-        List<Page> result = new List<Page>();
+        List<Page> result = [];
         List<string> split;
 
         switch (splittype)
@@ -1062,7 +1062,7 @@ public class InteractivityExtension : BaseExtension
             case SplitType.Line:
                 string[] subsplit = input.Split('\n');
 
-                split = new List<string>();
+                split = [];
                 string s = "";
 
                 for (int i = 0; i < subsplit.Length; i++)
@@ -1094,7 +1094,7 @@ public class InteractivityExtension : BaseExtension
 
     private List<string> SplitString(string str, int chunkSize)
     {
-        List<string> res = new List<string>();
+        List<string> res = [];
         int len = str.Length;
         int i = 0;
 

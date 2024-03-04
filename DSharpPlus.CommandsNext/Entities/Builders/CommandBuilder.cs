@@ -74,19 +74,19 @@ public class CommandBuilder
     /// <param name="module">Module on which this command is to be defined.</param>
     public CommandBuilder(ICommandModule? module)
     {
-        this._aliasList = new List<string>();
+        this._aliasList = [];
         this.Aliases = new ReadOnlyCollection<string>(this._aliasList);
 
-        this._executionCheckList = new List<CheckBaseAttribute>();
+        this._executionCheckList = [];
         this.ExecutionChecks = new ReadOnlyCollection<CheckBaseAttribute>(this._executionCheckList);
 
-        this._overloadArgumentSets = new HashSet<string>();
-        this._overloadList = new List<CommandOverloadBuilder>();
+        this._overloadArgumentSets = [];
+        this._overloadList = [];
         this.Overloads = new ReadOnlyCollection<CommandOverloadBuilder>(this._overloadList);
 
         this.Module = module;
 
-        this._customAttributeList = new List<Attribute>();
+        this._customAttributeList = [];
         this.CustomAttributes = new ReadOnlyCollection<Attribute>(this._customAttributeList);
     }
 

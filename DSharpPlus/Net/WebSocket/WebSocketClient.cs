@@ -58,7 +58,7 @@ public class WebSocketClient : IWebSocketClient
         this._exceptionThrown = new AsyncEvent<WebSocketClient, SocketErrorEventArgs>("WS_ERROR", null);
 
         this.Proxy = proxy;
-        this._defaultHeaders = new Dictionary<string, string>();
+        this._defaultHeaders = [];
         this.DefaultHeaders = new ReadOnlyDictionary<string, string>(this._defaultHeaders);
 
         this._receiverTokenSource = null;

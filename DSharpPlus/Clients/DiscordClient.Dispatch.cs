@@ -574,7 +574,7 @@ public sealed partial class DiscordClient
             //    .ToList();
 
             IEnumerable<TransportUser> recips_raw = rawChannel["recipients"].ToDiscordObject<IEnumerable<TransportUser>>();
-            List<DiscordUser> recipients = new List<DiscordUser>();
+            List<DiscordUser> recipients = [];
             foreach (TransportUser xr in recips_raw)
             {
                 DiscordUser xu = new DiscordUser(xr) { Discord = this };
@@ -1399,8 +1399,8 @@ public sealed partial class DiscordClient
         int chunkCount = (int)dat["chunk_count"];
         string? nonce = (string)dat["nonce"];
 
-        HashSet<DiscordMember> mbrs = new HashSet<DiscordMember>();
-        HashSet<DiscordPresence> pres = new HashSet<DiscordPresence>();
+        HashSet<DiscordMember> mbrs = [];
+        HashSet<DiscordPresence> pres = [];
 
         TransportMember[] members = dat["members"].ToDiscordObject<TransportMember[]>();
 
@@ -1622,7 +1622,7 @@ public sealed partial class DiscordClient
 
     internal async Task OnMessageUpdateEventAsync(DiscordMessage message, TransportUser author, TransportMember member, TransportUser referenceAuthor, TransportMember referenceMember)
     {
-        DiscordGuild guild;
+        DiscordGuild? guild;
 
         message.Discord = this;
         DiscordMessage event_message = message;
@@ -1664,11 +1664,11 @@ public sealed partial class DiscordClient
 
             // Mentions
             message._mentionedUsers.Clear();
-            message._mentionedUsers.AddRange(event_message._mentionedUsers ?? new());
+            message._mentionedUsers.AddRange(event_message._mentionedUsers ?? []);
             message._mentionedRoles.Clear();
-            message._mentionedRoles.AddRange(event_message._mentionedRoles ?? new());
+            message._mentionedRoles.AddRange(event_message._mentionedRoles ?? []);
             message._mentionedChannels.Clear();
-            message._mentionedChannels.AddRange(event_message._mentionedChannels ?? new());
+            message._mentionedChannels.AddRange(event_message._mentionedChannels ?? []);
             message.MentionEveryone = event_message.MentionEveryone;
         }
 
@@ -1808,7 +1808,7 @@ public sealed partial class DiscordClient
                 Id = messageId,
                 ChannelId = channelId,
                 Discord = this,
-                _reactions = new List<DiscordReaction>()
+                _reactions = []
             };
         }
 
@@ -2309,7 +2309,7 @@ public sealed partial class DiscordClient
         guild.Discord = this;
         thread.MemberCount = member_count;
 
-        List<DiscordMember> removedMembers = new List<DiscordMember>();
+        List<DiscordMember> removedMembers = [];
         if (removed_member_ids != null)
         {
             foreach (ulong? removedId in removed_member_ids)

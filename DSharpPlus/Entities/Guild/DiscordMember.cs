@@ -24,7 +24,7 @@ public class DiscordMember : DiscordUser, IEquatable<DiscordMember>
 
         this.Id = user.Id;
 
-        this._role_ids = new List<ulong>();
+        this._role_ids = [];
         this._role_ids_lazy = new Lazy<IReadOnlyList<ulong>>(() => new ReadOnlyCollection<ulong>(this._role_ids));
     }
 
@@ -38,7 +38,7 @@ public class DiscordMember : DiscordUser, IEquatable<DiscordMember>
         this.PremiumSince = member.PremiumSince;
         this.IsPending = member.IsPending;
         this._avatarHash = member.AvatarHash;
-        this._role_ids = member.Roles ?? new List<ulong>();
+        this._role_ids = member.Roles ?? [];
         this._role_ids_lazy = new Lazy<IReadOnlyList<ulong>>(() => new ReadOnlyCollection<ulong>(this._role_ids));
         this.CommunicationDisabledUntil = member.CommunicationDisabledUntil;
     }

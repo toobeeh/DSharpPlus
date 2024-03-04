@@ -136,7 +136,7 @@ public sealed class DiscordApiClient
 
         ret.PopulateMentions();
 
-        ret._reactions ??= new List<DiscordReaction>();
+        ret._reactions ??= [];
         foreach (DiscordReaction reaction in ret._reactions)
         {
             reaction.Emoji.Discord = this._discord!;
@@ -237,7 +237,7 @@ public sealed class DiscordApiClient
         JArray array = JArray.Parse(response.Response!);
         IReadOnlyList<TransportMember> transportMembers = array.ToDiscordObject<IReadOnlyList<TransportMember>>();
 
-        List<DiscordMember> members = new();
+        List<DiscordMember> members = [];
 
         foreach (TransportMember transport in transportMembers)
         {
@@ -1423,7 +1423,7 @@ public sealed class DiscordApiClient
 
     )
     {
-        List<DiscordRestOverwrite> restOverwrites = new();
+        List<DiscordRestOverwrite> restOverwrites = [];
         if (overwrites != null)
         {
             foreach (DiscordOverwriteBuilder ow in overwrites)
@@ -1451,7 +1451,7 @@ public sealed class DiscordApiClient
             DefaultSortOrder = defaultSortOrder
         };
 
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -1508,7 +1508,7 @@ public sealed class DiscordApiClient
         List<DiscordRestOverwrite>? restOverwrites = null;
         if (permissionOverwrites is not null)
         {
-            restOverwrites = new();
+            restOverwrites = [];
             foreach (DiscordOverwriteBuilder ow in permissionOverwrites)
             {
                 restOverwrites.Add(ow.Build());
@@ -1538,7 +1538,7 @@ public sealed class DiscordApiClient
             DefaultSortOrder = defaultSortOrder
         };
 
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -1582,7 +1582,7 @@ public sealed class DiscordApiClient
         List<DiscordRestOverwrite>? restOverwrites = null;
         if (permissionOverwrites is not null)
         {
-            restOverwrites = new List<DiscordRestOverwrite>();
+            restOverwrites = [];
             foreach (DiscordOverwriteBuilder ow in permissionOverwrites)
             {
                 restOverwrites.Add(ow.Build());
@@ -1610,7 +1610,7 @@ public sealed class DiscordApiClient
             AppliedTags = appliedTags
         };
 
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers.Add(REASON_HEADER_NAME, reason);
@@ -1676,7 +1676,7 @@ public sealed class DiscordApiClient
         string? reason = null
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
 
         if (!string.IsNullOrWhiteSpace(reason))
         {
@@ -1842,7 +1842,7 @@ public sealed class DiscordApiClient
         string route = $"{Endpoints.GUILDS}/{guildId}/{Endpoints.EVENTS}/:guild_scheduled_event_id";
         string url = $"{Endpoints.GUILDS}/{guildId}/{Endpoints.EVENTS}/{guildScheduledEventId}";
 
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -1932,7 +1932,7 @@ public sealed class DiscordApiClient
         string reason
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -2274,7 +2274,7 @@ public sealed class DiscordApiClient
         RestResponse res = await this._rest.ExecuteRequestAsync(request);
 
         JArray msgsRaw = JArray.Parse(res.Response!);
-        List<DiscordMessage> msgs = new();
+        List<DiscordMessage> msgs = [];
         foreach (JToken xj in msgsRaw)
         {
             msgs.Add(this.PrepareMessage(xj));
@@ -2405,7 +2405,7 @@ public sealed class DiscordApiClient
         string? reason
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -2437,7 +2437,7 @@ public sealed class DiscordApiClient
             Messages = messageIds
         };
 
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -2512,7 +2512,7 @@ public sealed class DiscordApiClient
             TargetApplicationId = targetApplicationId
         };
 
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -2545,7 +2545,7 @@ public sealed class DiscordApiClient
         string reason
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -2582,7 +2582,7 @@ public sealed class DiscordApiClient
             Deny = deny & PermissionMethods.FULL_PERMS
         };
 
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -2638,7 +2638,7 @@ public sealed class DiscordApiClient
         RestResponse res = await this._rest.ExecuteRequestAsync(request);
 
         JArray msgsRaw = JArray.Parse(res.Response!);
-        List<DiscordMessage> msgs = new();
+        List<DiscordMessage> msgs = [];
         foreach (JToken xj in msgsRaw)
         {
             msgs.Add(this.PrepareMessage(xj));
@@ -2850,7 +2850,7 @@ public sealed class DiscordApiClient
         string? reason = null
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -2914,7 +2914,7 @@ public sealed class DiscordApiClient
         string? reason = null
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -2954,7 +2954,7 @@ public sealed class DiscordApiClient
         bool? suppress = null
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
 
         RestBecomeStageSpeakerInstancePayload pld = new()
         {
@@ -2985,7 +2985,7 @@ public sealed class DiscordApiClient
         string? reason = null
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -3018,7 +3018,7 @@ public sealed class DiscordApiClient
         string? reason = null
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -3059,7 +3059,7 @@ public sealed class DiscordApiClient
         string? reason = null
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -3592,7 +3592,7 @@ public sealed class DiscordApiClient
         string? reason = null
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -3630,7 +3630,7 @@ public sealed class DiscordApiClient
         string? reason = null
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -3765,7 +3765,7 @@ public sealed class DiscordApiClient
             Icon = image
         };
 
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -3799,7 +3799,7 @@ public sealed class DiscordApiClient
         string? reason = null
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -3851,7 +3851,7 @@ public sealed class DiscordApiClient
             Icon = image
         };
 
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -3952,7 +3952,7 @@ public sealed class DiscordApiClient
             }
         }
 
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason!;
@@ -4126,7 +4126,7 @@ public sealed class DiscordApiClient
         string? reason = null
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason!;
@@ -4227,7 +4227,7 @@ public sealed class DiscordApiClient
         bool? withExpiration = null
     )
     {
-        Dictionary<string, string> urlparams = new();
+        Dictionary<string, string> urlparams = [];
         if (withCounts.HasValue)
         {
             urlparams["with_counts"] = withCounts?.ToString()!;
@@ -4258,7 +4258,7 @@ public sealed class DiscordApiClient
         string? reason = null
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -4352,7 +4352,7 @@ public sealed class DiscordApiClient
             AvatarSet = base64Avatar.HasValue
         };
 
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -4540,7 +4540,7 @@ public sealed class DiscordApiClient
             ChannelId = channelId
         };
 
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -4582,7 +4582,7 @@ public sealed class DiscordApiClient
             AvatarBase64 = base64Avatar
         };
 
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -4616,7 +4616,7 @@ public sealed class DiscordApiClient
         string? reason = null
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -4643,7 +4643,7 @@ public sealed class DiscordApiClient
         string? reason = null
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -4684,7 +4684,7 @@ public sealed class DiscordApiClient
             }
         }
 
-        Dictionary<string, string> values = new();
+        Dictionary<string, string> values = [];
         RestWebhookExecutePayload pld = new()
         {
             Content = builder.Content,
@@ -4916,7 +4916,7 @@ public sealed class DiscordApiClient
         string? reason
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -4965,7 +4965,7 @@ public sealed class DiscordApiClient
         RestResponse res = await this._rest.ExecuteRequestAsync(request);
 
         IEnumerable<TransportUser> usersRaw = JsonConvert.DeserializeObject<IEnumerable<TransportUser>>(res.Response!)!;
-        List<DiscordUser> users = new();
+        List<DiscordUser> users = [];
         foreach (TransportUser xr in usersRaw)
         {
             DiscordUser usr = new(xr)
@@ -4987,7 +4987,7 @@ public sealed class DiscordApiClient
         string? reason = null
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -5049,8 +5049,8 @@ public sealed class DiscordApiClient
         IEnumerable<JObject> emojisRaw = JsonConvert.DeserializeObject<IEnumerable<JObject>>(res.Response!)!;
 
         this._discord!.Guilds.TryGetValue(guildId, out DiscordGuild? guild);
-        Dictionary<ulong, DiscordUser> users = new();
-        List<DiscordGuildEmoji> emojis = new();
+        Dictionary<ulong, DiscordUser> users = [];
+        List<DiscordGuildEmoji> emojis = [];
         foreach (JObject rawEmoji in emojisRaw)
         {
             DiscordGuildEmoji discordGuildEmoji = rawEmoji.ToDiscordObject<DiscordGuildEmoji>();
@@ -5131,7 +5131,7 @@ public sealed class DiscordApiClient
             Roles = roles?.ToArray()
         };
 
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -5184,7 +5184,7 @@ public sealed class DiscordApiClient
             Roles = roles?.ToArray()
         };
 
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -5230,7 +5230,7 @@ public sealed class DiscordApiClient
         string? reason = null
     )
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -5284,7 +5284,7 @@ public sealed class DiscordApiClient
         IEnumerable<DiscordApplicationCommand> commands
     )
     {
-        List<RestApplicationCommandCreatePayload> pld = new();
+        List<RestApplicationCommandCreatePayload> pld = [];
         foreach (DiscordApplicationCommand command in commands)
         {
             pld.Add(new RestApplicationCommandCreatePayload
@@ -5487,7 +5487,7 @@ public sealed class DiscordApiClient
         IEnumerable<DiscordApplicationCommand> commands
     )
     {
-        List<RestApplicationCommandCreatePayload> pld = new();
+        List<RestApplicationCommandCreatePayload> pld = [];
         foreach (DiscordApplicationCommand command in commands)
         {
             pld.Add(new RestApplicationCommandCreatePayload
@@ -5698,7 +5698,7 @@ public sealed class DiscordApiClient
             : null
         };
 
-        Dictionary<string, string> values = new();
+        Dictionary<string, string> values = [];
 
         if (builder != null)
         {
@@ -5864,7 +5864,7 @@ public sealed class DiscordApiClient
             }
         }
 
-        Dictionary<string, string> values = new();
+        Dictionary<string, string> values = [];
         RestFollowupMessageCreatePayload pld = new()
         {
             Content = builder.Content,
@@ -6107,7 +6107,7 @@ public sealed class DiscordApiClient
 
     internal async ValueTask<GatewayInfo> GetGatewayInfoAsync()
     {
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         string route = $"{Endpoints.GATEWAY}/{Endpoints.BOT}";
         string url = route;
 
@@ -6235,7 +6235,7 @@ public sealed class DiscordApiClient
         string route = $"{Endpoints.GUILDS}/{guildId}/{Endpoints.AUTO_MODERATION}/{Endpoints.RULES}";
         string url = $"{Endpoints.GUILDS}/{guildId}/{Endpoints.AUTO_MODERATION}/{Endpoints.RULES}";
 
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -6354,7 +6354,7 @@ public sealed class DiscordApiClient
         string route = $"{Endpoints.GUILDS}/{guildId}/{Endpoints.AUTO_MODERATION}/{Endpoints.RULES}/:rule_id";
         string url = $"{Endpoints.GUILDS}/{guildId}/{Endpoints.AUTO_MODERATION}/{Endpoints.RULES}/{ruleId}";
 
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;
@@ -6402,7 +6402,7 @@ public sealed class DiscordApiClient
         string route = $"{Endpoints.GUILDS}/{guildId}/{Endpoints.AUTO_MODERATION}/{Endpoints.RULES}/:rule_id";
         string url = $"{Endpoints.GUILDS}/{guildId}/{Endpoints.AUTO_MODERATION}/{Endpoints.RULES}/{ruleId}";
 
-        Dictionary<string, string> headers = new();
+        Dictionary<string, string> headers = [];
         if (!string.IsNullOrWhiteSpace(reason))
         {
             headers[REASON_HEADER_NAME] = reason;

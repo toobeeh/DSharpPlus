@@ -10,7 +10,7 @@ namespace DSharpPlus.Interactivity.EventHandling;
 internal class InteractionPaginationRequest : IPaginationRequest
 {
     private int _index;
-    private readonly List<Page> _pages = new();
+    private readonly List<Page> _pages = [];
 
     private readonly TaskCompletionSource<bool> _tcs = new();
 

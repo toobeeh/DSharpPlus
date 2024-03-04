@@ -41,7 +41,7 @@ internal class ReactionCollector : IDisposable
         this._client = client;
         TypeInfo tinfo = this._client.GetType().GetTypeInfo();
 
-        this._requests = new ConcurrentHashSet<ReactionCollectRequest>();
+        this._requests = [];
 
         // Grabbing all three events from client
         FieldInfo handler = tinfo.DeclaredFields.First(x => x.FieldType == typeof(AsyncEvent<DiscordClient, MessageReactionAddEventArgs>));
@@ -104,7 +104,7 @@ internal class ReactionCollector : IDisposable
                     req._collected.Add(new Reaction()
                     {
                         Emoji = eventargs.Emoji,
-                        Users = new ConcurrentHashSet<DiscordUser>() { eventargs.User }
+                        Users = [eventargs.User]
                     });
                 }
             }
@@ -195,7 +195,7 @@ public class ReactionCollectRequest : IDisposable
     public ReactionCollectRequest(DiscordMessage msg, TimeSpan timeout)
     {
         this._message = msg;
-        this._collected = new ConcurrentHashSet<Reaction>();
+        this._collected = [];
         this._timeout = timeout;
         this._tcs = new TaskCompletionSource<Reaction>();
         this._ct = new CancellationTokenSource(this._timeout);

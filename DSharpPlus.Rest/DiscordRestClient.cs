@@ -19,7 +19,7 @@ public class DiscordRestClient : BaseDiscordClient
     public override IReadOnlyDictionary<ulong, DiscordGuild> Guilds
         => this._guilds_lazy.Value;
 
-    internal Dictionary<ulong, DiscordGuild> _guilds = new();
+    internal Dictionary<ulong, DiscordGuild> _guilds = [];
     private Lazy<IReadOnlyDictionary<ulong, DiscordGuild>> _guilds_lazy;
 
     public DiscordRestClient(DiscordConfiguration config) : base(config) => this._disposed = false;
@@ -147,7 +147,7 @@ public class DiscordRestClient : BaseDiscordClient
         ulong? last = null;
         bool isAfter = after != null;
 
-        List<DiscordUser> users = new();
+        List<DiscordUser> users = [];
 
         int lastCount;
         do
@@ -388,7 +388,7 @@ public class DiscordRestClient : BaseDiscordClient
     /// <returns></returns>
     public async Task<IReadOnlyList<DiscordMember>> ListGuildMembersAsync(ulong guild_id, int? limit, ulong? after)
     {
-        List<DiscordMember> recmbr = new();
+        List<DiscordMember> recmbr = [];
 
         int recd = limit ?? 1000;
         int lim = limit ?? 1000;
@@ -453,13 +453,13 @@ public class DiscordRestClient : BaseDiscordClient
     /// <returns></returns>
     public async Task UpdateRolePositionAsync(ulong guild_id, ulong role_id, int position, string reason = null)
     {
-        List<RestGuildRoleReorderPayload> rgrrps = new()
-        {
+        List<RestGuildRoleReorderPayload> rgrrps =
+        [
             new()
             {
                 RoleId = role_id
             }
-        };
+        ];
         await this.ApiClient.ModifyGuildRolePositionsAsync(guild_id, rgrrps, reason);
     }
 
@@ -475,8 +475,8 @@ public class DiscordRestClient : BaseDiscordClient
     /// <returns></returns>
     public async Task UpdateChannelPositionAsync(ulong guild_id, ulong channel_id, int position, string reason, bool? lockPermissions = null, ulong? parentId = null)
     {
-        List<RestGuildChannelReorderPayload> rgcrps = new()
-        {
+        List<RestGuildChannelReorderPayload> rgcrps =
+        [
             new()
             {
                 ChannelId = channel_id,
@@ -484,7 +484,7 @@ public class DiscordRestClient : BaseDiscordClient
                 LockPermissions = lockPermissions,
                 ParentId = parentId
             }
-        };
+        ];
         await this.ApiClient.ModifyGuildChannelPositionAsync(guild_id, rgcrps, reason);
     }
 

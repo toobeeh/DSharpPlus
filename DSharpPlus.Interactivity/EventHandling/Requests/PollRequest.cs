@@ -30,7 +30,7 @@ public class PollRequest
         this._ct.Token.Register(() => this._tcs.TrySetResult(true));
         this._timeout = timeout;
         this._emojis = emojis;
-        this._collected = new ConcurrentHashSet<PollEmoji>();
+        this._collected = [];
         this._message = message;
 
         foreach (DiscordEmoji e in emojis)
@@ -93,7 +93,7 @@ public class PollEmoji
     internal PollEmoji(DiscordEmoji emoji)
     {
         this.Emoji = emoji;
-        this.Voted = new ConcurrentHashSet<DiscordUser>();
+        this.Voted = [];
     }
 
     public DiscordEmoji Emoji;

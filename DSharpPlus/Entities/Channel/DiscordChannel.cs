@@ -91,7 +91,7 @@ public class DiscordChannel : SnowflakeObject, IEquatable<DiscordChannel>
         => this._permissionOverwritesLazy.Value;
 
     [JsonProperty("permission_overwrites", NullValueHandling = NullValueHandling.Ignore)]
-    internal List<DiscordOverwrite> _permissionOverwrites = new();
+    internal List<DiscordOverwrite> _permissionOverwrites = [];
 
     [JsonIgnore]
     private readonly Lazy<IReadOnlyList<DiscordOverwrite>> _permissionOverwritesLazy;
@@ -349,7 +349,7 @@ public class DiscordChannel : SnowflakeObject, IEquatable<DiscordChannel>
             throw new InvalidOperationException("Non-guild channels cannot be cloned.");
         }
 
-        List<DiscordOverwriteBuilder> ovrs = new();
+        List<DiscordOverwriteBuilder> ovrs = [];
         foreach (DiscordOverwrite ovr in this._permissionOverwrites)
         {
             ovrs.Add(await new DiscordOverwriteBuilder(member: null).FromAsync(ovr));

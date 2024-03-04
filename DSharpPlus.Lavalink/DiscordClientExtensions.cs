@@ -39,7 +39,7 @@ public static class DiscordClientExtensions
     /// <returns>A dictionary of created Lavalink clients.</returns>
     public static async Task<IReadOnlyDictionary<int, LavalinkExtension>> UseLavalinkAsync(this DiscordShardedClient client)
     {
-        Dictionary<int, LavalinkExtension> modules = new Dictionary<int, LavalinkExtension>();
+        Dictionary<int, LavalinkExtension> modules = [];
         await client.InitializeShardsAsync();
 
         foreach (DiscordClient? shard in client.ShardClients.Select(xkvp => xkvp.Value))
@@ -67,7 +67,7 @@ public static class DiscordClientExtensions
     public static async Task<IReadOnlyDictionary<int, LavalinkExtension>> GetLavalinkAsync(this DiscordShardedClient client)
     {
         await client.InitializeShardsAsync();
-        Dictionary<int, LavalinkExtension> extensions = new Dictionary<int, LavalinkExtension>();
+        Dictionary<int, LavalinkExtension> extensions = [];
 
         foreach (DiscordClient shard in client.ShardClients.Values)
         {

@@ -24,7 +24,7 @@ internal class DspUdpClient : BaseUdpClient
     /// </summary>
     public DspUdpClient()
     {
-        this.PacketQueue = new BlockingCollection<byte[]>();
+        this.PacketQueue = [];
         this.TokenSource = new CancellationTokenSource();
     }
 
