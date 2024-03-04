@@ -62,7 +62,7 @@ public sealed class LavalinkExtension : BaseExtension
             return this._connectedNodes[config.SocketEndpoint];
         }
 
-        LavalinkNodeConnection con = new LavalinkNodeConnection(this.Client, this, config);
+        LavalinkNodeConnection con = new(this.Client, this, config);
         con.NodeDisconnected += this.Con_NodeDisconnected;
         con.Disconnected += this.Con_Disconnected;
         this._connectedNodes[con.NodeEndpoint] = con;
@@ -103,7 +103,7 @@ public sealed class LavalinkExtension : BaseExtension
 
         if (region != null)
         {
-            Func<LavalinkNodeConnection, bool> regionPredicate = new Func<LavalinkNodeConnection, bool>(x => x.Region == region);
+            Func<LavalinkNodeConnection, bool> regionPredicate = new(x => x.Region == region);
 
             if (nodes.Any(regionPredicate))
             {

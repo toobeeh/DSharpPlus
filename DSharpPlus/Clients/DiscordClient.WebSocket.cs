@@ -142,7 +142,7 @@ public sealed partial class DiscordClient
             }
             else if (e is SocketBinaryMessageEventArgs ebin) // :DDDD
             {
-                using MemoryStream ms = new MemoryStream();
+                using MemoryStream ms = new();
                 if (!this._payloadDecompressor.TryDecompress(new ArraySegment<byte>(ebin.Message), ms))
                 {
                     this.Logger.LogError(LoggerEvents.WebSocketReceiveFailure, "Payload decompression failed");
@@ -150,7 +150,7 @@ public sealed partial class DiscordClient
                 }
 
                 ms.Position = 0;
-                using StreamReader sr = new StreamReader(ms, Utilities.UTF8);
+                using StreamReader sr = new(ms, Utilities.UTF8);
                 msg = await sr.ReadToEndAsync();
             }
 
@@ -327,7 +327,7 @@ public sealed partial class DiscordClient
 
         Volatile.Write(ref this._ping, ping);
 
-        HeartbeatEventArgs args = new HeartbeatEventArgs
+        HeartbeatEventArgs args = new()
         {
             Ping = this.Ping,
             Timestamp = DateTimeOffset.Now
@@ -366,7 +366,7 @@ public sealed partial class DiscordClient
         long? since_unix = idleSince != null ? (long?)Utilities.GetUnixTime(idleSince.Value) : null;
         DiscordActivity act = activity ?? new DiscordActivity();
 
-        StatusUpdate status = new StatusUpdate
+        StatusUpdate status = new()
         {
             Activity = new TransportActivity(act),
             IdleSince = since_unix,
@@ -376,7 +376,7 @@ public sealed partial class DiscordClient
 
         // Solution to have status persist between sessions
         this._status = status;
-        GatewayPayload status_update = new GatewayPayload
+        GatewayPayload status_update = new()
         {
             OpCode = GatewayOpCode.StatusUpdate,
             Data = status
@@ -413,7 +413,7 @@ public sealed partial class DiscordClient
         {
             this.Logger.LogCritical(LoggerEvents.HeartbeatFailure, "Server failed to acknowledge more than 5 heartbeats - connection is zombie");
 
-            ZombiedEventArgs args = new ZombiedEventArgs
+            ZombiedEventArgs args = new()
             {
                 Failures = Volatile.Read(ref this._skippedHeartbeats),
                 GuildDownloadCompleted = true
@@ -427,7 +427,7 @@ public sealed partial class DiscordClient
 
         if (!guilds_comp && more_than_5)
         {
-            ZombiedEventArgs args = new ZombiedEventArgs
+            ZombiedEventArgs args = new()
             {
                 Failures = Volatile.Read(ref this._skippedHeartbeats),
                 GuildDownloadCompleted = false
@@ -439,7 +439,7 @@ public sealed partial class DiscordClient
 
         Volatile.Write(ref this._lastSequence, seq);
         this.Logger.LogTrace(LoggerEvents.Heartbeat, "Sending heartbeat");
-        GatewayPayload heartbeat = new GatewayPayload
+        GatewayPayload heartbeat = new()
         {
             OpCode = GatewayOpCode.Heartbeat,
             Data = seq
@@ -454,7 +454,7 @@ public sealed partial class DiscordClient
 
     internal async Task SendIdentifyAsync(StatusUpdate status)
     {
-        GatewayIdentify identify = new GatewayIdentify
+        GatewayIdentify identify = new()
         {
             Token = Utilities.GetFormattedToken(this),
             Compress = this.Configuration.GatewayCompressionLevel == GatewayCompressionLevel.Payload,
@@ -467,7 +467,7 @@ public sealed partial class DiscordClient
             Presence = status,
             Intents = this.Configuration.Intents
         };
-        GatewayPayload payload = new GatewayPayload
+        GatewayPayload payload = new()
         {
             OpCode = GatewayOpCode.Identify,
             Data = identify
@@ -480,13 +480,13 @@ public sealed partial class DiscordClient
 
     internal async Task SendResumeAsync()
     {
-        GatewayResume resume = new GatewayResume
+        GatewayResume resume = new()
         {
             Token = Utilities.GetFormattedToken(this),
             SessionId = this._sessionId,
             SequenceNumber = Volatile.Read(ref this._lastSequence)
         };
-        GatewayPayload resume_payload = new GatewayPayload
+        GatewayPayload resume_payload = new()
         {
             OpCode = GatewayOpCode.Resume,
             Data = resume

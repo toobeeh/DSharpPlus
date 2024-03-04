@@ -91,7 +91,7 @@ internal sealed class Opus : IDisposable
     {
         lock (this.ManagedDecoders)
         {
-            OpusDecoder managedDecoder = new OpusDecoder(this);
+            OpusDecoder managedDecoder = new(this);
             this.ManagedDecoders.Add(managedDecoder);
             return managedDecoder;
         }

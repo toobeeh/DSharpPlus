@@ -239,7 +239,7 @@ public sealed class VoiceNextConnection : IDisposable
     /// <returns>A task representing the connection operation.</returns>
     internal Task ConnectAsync()
     {
-        UriBuilder gwuri = new UriBuilder
+        UriBuilder gwuri = new()
         {
             Scheme = "wss",
             Host = this.WebSocketEndpoint.Hostname,
@@ -255,7 +255,7 @@ public sealed class VoiceNextConnection : IDisposable
     internal async Task StartAsync()
     {
         // Let's announce our intentions to the server
-        VoiceDispatch vdp = new VoiceDispatch();
+        VoiceDispatch vdp = new();
 
         if (!this.Resume)
         {
@@ -657,7 +657,7 @@ public sealed class VoiceNextConnection : IDisposable
         if (this._isSpeaking != speaking)
         {
             this._isSpeaking = speaking;
-            VoiceDispatch pld = new VoiceDispatch
+            VoiceDispatch pld = new()
             {
                 OpCode = 5,
                 Payload = new VoiceSpeakingPayload
@@ -776,7 +776,7 @@ public sealed class VoiceNextConnection : IDisposable
                 DateTime dt = DateTime.Now;
                 this.Discord.Logger.LogTrace(VoiceNextEvents.VoiceHeartbeat, "Sent heartbeat");
 
-                VoiceDispatch hbd = new VoiceDispatch
+                VoiceDispatch hbd = new()
                 {
                     OpCode = 3,
                     Payload = UnixTimestamp(dt)
@@ -882,7 +882,7 @@ public sealed class VoiceNextConnection : IDisposable
 
         // Ready
         this.Discord.Logger.LogTrace(VoiceNextEvents.VoiceHandshake, "Selected encryption mode is {EncryptionMode}", selectedEncryptionMode.Key);
-        VoiceDispatch vsp = new VoiceDispatch
+        VoiceDispatch vsp = new()
         {
             OpCode = 1,
             Payload = new VoiceSelectProtocolPayload
@@ -961,7 +961,7 @@ public sealed class VoiceNextConnection : IDisposable
                 this.Discord.Logger.LogTrace(VoiceNextEvents.VoiceDispatch, "Received SPEAKING (OP5)");
                 VoiceSpeakingPayload spd = opp.ToDiscordObject<VoiceSpeakingPayload>();
                 bool foundUserInCache = this.Discord.TryGetCachedUserInternal(spd.UserId.Value, out DiscordUser? resolvedUser);
-                UserSpeakingEventArgs spk = new UserSpeakingEventArgs
+                UserSpeakingEventArgs spk = new()
                 {
                     Speaking = spd.Speaking,
                     SSRC = spd.SSRC.Value,
@@ -975,7 +975,7 @@ public sealed class VoiceNextConnection : IDisposable
                 else
                 {
                     OpusDecoder opus = this.Opus.CreateDecoder();
-                    AudioSender vtx = new AudioSender(spk.SSRC, opus)
+                    AudioSender vtx = new(spk.SSRC, opus)
                     {
                         User = await this.Discord.GetUserAsync(spd.UserId.Value)
                     };
@@ -1014,7 +1014,7 @@ public sealed class VoiceNextConnection : IDisposable
                 DiscordUser usrj = await this.Discord.GetUserAsync(ujpd.UserId);
                 {
                     OpusDecoder opus = this.Opus.CreateDecoder();
-                    AudioSender vtx = new AudioSender(ujpd.SSRC, opus)
+                    AudioSender vtx = new(ujpd.SSRC, opus)
                     {
                         User = usrj
                     };

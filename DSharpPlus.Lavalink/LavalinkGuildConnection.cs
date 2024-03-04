@@ -160,7 +160,7 @@ public sealed class LavalinkGuildConnection
 
     internal async Task SendVoiceUpdateAsync()
     {
-        VoiceDispatch vsd = new VoiceDispatch
+        VoiceDispatch vsd = new()
         {
             OpCode = 4,
             Payload = new VoiceStateUpdatePayload
@@ -356,7 +356,7 @@ public sealed class LavalinkGuildConnection
 
     internal Task InternalPlaybackStartedAsync(string track)
     {
-        TrackStartEventArgs ea = new TrackStartEventArgs(this, LavalinkUtilities.DecodeTrack(track));
+        TrackStartEventArgs ea = new(this, LavalinkUtilities.DecodeTrack(track));
         return this._playbackStarted.InvokeAsync(this, ea);
     }
 
@@ -367,19 +367,19 @@ public sealed class LavalinkGuildConnection
             this.CurrentState.CurrentTrack = default;
         }
 
-        TrackFinishEventArgs ea = new TrackFinishEventArgs(this, LavalinkUtilities.DecodeTrack(e.Track), e.Reason);
+        TrackFinishEventArgs ea = new(this, LavalinkUtilities.DecodeTrack(e.Track), e.Reason);
         return this._playbackFinished.InvokeAsync(this, ea);
     }
 
     internal Task InternalTrackStuckAsync(TrackStuckData e)
     {
-        TrackStuckEventArgs ea = new TrackStuckEventArgs(this, e.Threshold, LavalinkUtilities.DecodeTrack(e.Track));
+        TrackStuckEventArgs ea = new(this, e.Threshold, LavalinkUtilities.DecodeTrack(e.Track));
         return this._trackStuck.InvokeAsync(this, ea);
     }
 
     internal Task InternalTrackExceptionAsync(TrackExceptionData e)
     {
-        TrackExceptionEventArgs ea = new TrackExceptionEventArgs(this, e.Error, LavalinkUtilities.DecodeTrack(e.Track));
+        TrackExceptionEventArgs ea = new(this, e.Error, LavalinkUtilities.DecodeTrack(e.Track));
         return this._trackException.InvokeAsync(this, ea);
     }
 

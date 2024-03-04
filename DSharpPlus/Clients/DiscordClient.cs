@@ -507,7 +507,7 @@ public sealed partial class DiscordClient : BaseDiscordClient
     /// <exception cref="Exceptions.ServerErrorException">Thrown when Discord is unable to process the request.</exception>
     public async Task<DiscordMessage> SendMessageAsync(DiscordChannel channel, Action<DiscordMessageBuilder> action)
     {
-        DiscordMessageBuilder builder = new DiscordMessageBuilder();
+        DiscordMessageBuilder builder = new();
         action(builder);
 
         return await this.ApiClient.CreateMessageAsync(channel.Id, builder);
@@ -533,7 +533,7 @@ public sealed partial class DiscordClient : BaseDiscordClient
         Optional<string> iconb64 = Optional.FromNoValue<string>();
         if (icon.HasValue && icon.Value != null)
         {
-            using (ImageTool imgtool = new ImageTool(icon.Value))
+            using (ImageTool imgtool = new(icon.Value))
             {
                 iconb64 = imgtool.GetBase64();
             }
@@ -560,7 +560,7 @@ public sealed partial class DiscordClient : BaseDiscordClient
         Optional<string> iconb64 = Optional.FromNoValue<string>();
         if (icon.HasValue && icon.Value != null)
         {
-            using (ImageTool imgtool = new ImageTool(icon.Value))
+            using (ImageTool imgtool = new(icon.Value))
             {
                 iconb64 = imgtool.GetBase64();
             }
@@ -680,7 +680,7 @@ public sealed partial class DiscordClient : BaseDiscordClient
         Optional<string> av64 = Optional.FromNoValue<string>();
         if (avatar.HasValue && avatar.Value != null)
         {
-            using (ImageTool imgtool = new ImageTool(avatar.Value))
+            using (ImageTool imgtool = new(avatar.Value))
             {
                 av64 = imgtool.GetBase64();
             }
@@ -765,7 +765,7 @@ public sealed partial class DiscordClient : BaseDiscordClient
     /// <returns>The edited command.</returns>
     public async Task<DiscordApplicationCommand> EditGlobalApplicationCommandAsync(ulong commandId, Action<ApplicationCommandEditModel> action)
     {
-        ApplicationCommandEditModel mdl = new ApplicationCommandEditModel();
+        ApplicationCommandEditModel mdl = new();
         action(mdl);
         ulong applicationId = this.CurrentApplication?.Id ?? (await this.GetCurrentApplicationAsync()).Id;
         return await this.ApiClient.EditGlobalApplicationCommandAsync(applicationId, commandId, mdl.Name, mdl.Description, mdl.Options, mdl.DefaultPermission, mdl.NSFW, default, default, mdl.AllowDMUsage, mdl.DefaultMemberPermissions);
@@ -822,7 +822,7 @@ public sealed partial class DiscordClient : BaseDiscordClient
     /// <returns>The edited command.</returns>
     public async Task<DiscordApplicationCommand> EditGuildApplicationCommandAsync(ulong guildId, ulong commandId, Action<ApplicationCommandEditModel> action)
     {
-        ApplicationCommandEditModel mdl = new ApplicationCommandEditModel();
+        ApplicationCommandEditModel mdl = new();
         action(mdl);
         ulong applicationId = this.CurrentApplication?.Id ?? (await this.GetCurrentApplicationAsync()).Id;
         return await this.ApiClient.EditGuildApplicationCommandAsync(applicationId, guildId, commandId, mdl.Name, mdl.Description, mdl.Options, mdl.DefaultPermission, mdl.NSFW, default, default, mdl.AllowDMUsage, mdl.DefaultMemberPermissions);
@@ -972,7 +972,7 @@ public sealed partial class DiscordClient : BaseDiscordClient
     {
         if (author != null)
         {
-            DiscordUser usr = new DiscordUser(author) { Discord = this };
+            DiscordUser usr = new(author) { Discord = this };
 
             if (member != null)
             {
@@ -1113,7 +1113,7 @@ public sealed partial class DiscordClient : BaseDiscordClient
             {
                 TransportMember xtm = xj.ToDiscordObject<TransportMember>();
 
-                DiscordUser xu = new DiscordUser(xtm.User) { Discord = this };
+                DiscordUser xu = new(xtm.User) { Discord = this };
                 this.UpdateUserCache(xu);
 
                 guild._members[xtm.User.Id] = new DiscordMember(xtm) { Discord = this, _guild_id = guild.Id };

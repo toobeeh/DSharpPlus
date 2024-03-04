@@ -457,7 +457,7 @@ public class DiscordMember : DiscordUser, IEquatable<DiscordMember>
     /// <exception cref="Exceptions.ServerErrorException">Thrown when Discord is unable to process the request.</exception>
     public async Task ModifyAsync(Action<MemberEditModel> action)
     {
-        MemberEditModel mdl = new MemberEditModel();
+        MemberEditModel mdl = new();
         action(mdl);
 
         if (mdl.VoiceChannel.HasValue && mdl.VoiceChannel.Value != null && mdl.VoiceChannel.Value.Type != ChannelType.Voice && mdl.VoiceChannel.Value.Type != ChannelType.Stage)
