@@ -92,13 +92,13 @@ public sealed class VoiceTransmitSink : IDisposable
             {
                 int len = Math.Min(pcmSpan.Length - this.PcmBufferLength, remaining);
 
-                Memory<byte> tgt = pcmSpan.Slice(this.PcmBufferLength);
-                ReadOnlyMemory<byte> src = buffSpan.Slice(0, len);
+                Memory<byte> tgt = pcmSpan[this.PcmBufferLength..];
+                ReadOnlyMemory<byte> src = buffSpan[..len];
 
                 src.CopyTo(tgt);
                 this.PcmBufferLength += len;
                 remaining -= len;
-                buffSpan = buffSpan.Slice(len);
+                buffSpan = buffSpan[len..];
 
                 if (this.PcmBufferLength == this.PcmBuffer.Length)
                 {
@@ -107,7 +107,7 @@ public sealed class VoiceTransmitSink : IDisposable
                     this.PcmBufferLength = 0;
 
                     byte[] packet = ArrayPool<byte>.Shared.Rent(this.PcmMemory.Length);
-                    Memory<byte> packetMemory = packet.AsMemory().Slice(0, this.PcmMemory.Length);
+                    Memory<byte> packetMemory = packet.AsMemory()[..this.PcmMemory.Length];
                     this.PcmMemory.CopyTo(packetMemory);
 
                     await this.Connection.EnqueuePacketAsync(new RawVoicePacket(packetMemory, this.PcmBufferDuration, false, packet), cancellationToken);
@@ -127,12 +127,12 @@ public sealed class VoiceTransmitSink : IDisposable
     public async Task FlushAsync(CancellationToken cancellationToken = default)
     {
         Memory<byte> pcm = this.PcmMemory;
-        Helpers.ZeroFill(pcm.Slice(this.PcmBufferLength).Span);
+        Helpers.ZeroFill(pcm[this.PcmBufferLength..].Span);
 
         this.ApplyFiltersSync(pcm);
 
         byte[] packet = ArrayPool<byte>.Shared.Rent(pcm.Length);
-        Memory<byte> packetMemory = packet.AsMemory().Slice(0, pcm.Length);
+        Memory<byte> packetMemory = packet.AsMemory()[..pcm.Length];
         pcm.CopyTo(packetMemory);
 
         await this.Connection.EnqueuePacketAsync(new RawVoicePacket(packetMemory, this.PcmBufferDuration, false, packet), cancellationToken);

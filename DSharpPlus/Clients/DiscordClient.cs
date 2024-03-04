@@ -1187,10 +1187,7 @@ public sealed partial class DiscordClient : BaseDiscordClient
 
         this.UpdateMessage(message, author, guild, member);
 
-        if (message._reactions == null)
-        {
-            message._reactions = [];
-        }
+        message._reactions ??= [];
 
         foreach (DiscordReaction xr in message._reactions)
         {

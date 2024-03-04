@@ -49,7 +49,7 @@ internal sealed class PayloadDecompressor : IDisposable
         this.CompressedStream.Position = 0;
 
         Span<byte> cspan = compressed.AsSpan();
-        uint suffix = BinaryPrimitives.ReadUInt32BigEndian(cspan.Slice(cspan.Length - 4));
+        uint suffix = BinaryPrimitives.ReadUInt32BigEndian(cspan[^4..]);
         if (this.CompressionLevel == GatewayCompressionLevel.Stream && suffix != ZlibFlush)
         {
             if (this.CompressionLevel == GatewayCompressionLevel.Payload)
