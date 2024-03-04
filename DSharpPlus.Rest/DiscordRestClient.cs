@@ -11,7 +11,7 @@ using DSharpPlus.Net.Models;
 
 namespace DSharpPlus;
 
-public class DiscordRestClient : BaseDiscordClient
+public class DiscordRestClient(DiscordConfiguration config) : BaseDiscordClient(config)
 {
     /// <summary>
     /// Gets the dictionary of guilds cached by this client.
@@ -21,8 +21,6 @@ public class DiscordRestClient : BaseDiscordClient
 
     internal Dictionary<ulong, DiscordGuild> _guilds = [];
     private Lazy<IReadOnlyDictionary<ulong, DiscordGuild>> _guilds_lazy;
-
-    public DiscordRestClient(DiscordConfiguration config) : base(config) => this._disposed = false;
 
     /// <summary>
     /// Initializes cache
@@ -2300,7 +2298,7 @@ public class DiscordRestClient : BaseDiscordClient
         => await this.ApiClient.GetTemplateAsync(code);
     #endregion
 
-    private bool _disposed;
+    private bool _disposed = false;
     /// <summary>
     /// Disposes of this DiscordRestClient
     /// </summary>

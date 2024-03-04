@@ -5,12 +5,10 @@ namespace DSharpPlus;
 
 using System.Collections.Concurrent;
 
-internal class ShardedLoggerFactory : ILoggerFactory
+internal class ShardedLoggerFactory(ILoggerFactory factory) : ILoggerFactory
 {
     private ConcurrentDictionary<string, ILogger> Loggers { get; } = new();
-    private ILoggerFactory Factory { get; }
-
-    public ShardedLoggerFactory(ILoggerFactory factory) => this.Factory = factory;
+    private ILoggerFactory Factory { get; } = factory;
 
     public void AddProvider(ILoggerProvider provider) => throw new InvalidOperationException("This is a passthrough logger container, it cannot register new providers.");
 

@@ -5,19 +5,17 @@ namespace DSharpPlus.CommandsNext.Attributes;
 /// <summary>
 /// Defines a lifespan for this command module.
 /// </summary>
+/// <remarks>
+/// Defines a lifespan for this command module.
+/// </remarks>
+/// <param name="lifespan">Lifespan for this module.</param>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-public class ModuleLifespanAttribute : Attribute
+public class ModuleLifespanAttribute(ModuleLifespan lifespan) : Attribute
 {
     /// <summary>
     /// Gets the lifespan defined for this module.
     /// </summary>
-    public ModuleLifespan Lifespan { get; }
-
-    /// <summary>
-    /// Defines a lifespan for this command module.
-    /// </summary>
-    /// <param name="lifespan">Lifespan for this module.</param>
-    public ModuleLifespanAttribute(ModuleLifespan lifespan) => this.Lifespan = lifespan;
+    public ModuleLifespan Lifespan { get; } = lifespan;
 }
 
 /// <summary>

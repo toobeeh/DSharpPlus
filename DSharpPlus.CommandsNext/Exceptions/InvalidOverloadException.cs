@@ -6,30 +6,23 @@ namespace DSharpPlus.CommandsNext.Exceptions;
 /// <summary>
 /// Thrown when the command service fails to build a command due to a problem with its overload.
 /// </summary>
-public sealed class InvalidOverloadException : Exception
+/// <remarks>
+/// Creates a new <see cref="InvalidOverloadException"/>.
+/// </remarks>
+/// <param name="message">Exception message.</param>
+/// <param name="method">Method that caused the problem.</param>
+/// <param name="parameter">Method argument that caused the problem.</param>
+public sealed class InvalidOverloadException(string message, MethodInfo method, ParameterInfo? parameter) : Exception(message)
 {
     /// <summary>
     /// Gets the method that caused this exception.
     /// </summary>
-    public MethodInfo Method { get; }
+    public MethodInfo Method { get; } = method;
 
     /// <summary>
     /// Gets or sets the argument that caused the problem. This can be null.
     /// </summary>
-    public ParameterInfo? Parameter { get; }
-
-    /// <summary>
-    /// Creates a new <see cref="InvalidOverloadException"/>.
-    /// </summary>
-    /// <param name="message">Exception message.</param>
-    /// <param name="method">Method that caused the problem.</param>
-    /// <param name="parameter">Method argument that caused the problem.</param>
-    public InvalidOverloadException(string message, MethodInfo method, ParameterInfo? parameter)
-        : base(message)
-    {
-        this.Method = method;
-        this.Parameter = parameter;
-    }
+    public ParameterInfo? Parameter { get; } = parameter;
 
     /// <summary>
     /// Creates a new <see cref="InvalidOverloadException"/>.

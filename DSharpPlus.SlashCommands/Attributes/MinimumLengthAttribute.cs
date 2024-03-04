@@ -28,16 +28,14 @@ namespace DSharpPlus.SlashCommands;
 /// <summary>
 /// Sets a minimum allowed length for this slash command option. Only valid for <see cref="string"/> parameters.
 /// </summary>
+/// <remarks>
+/// Sets a minimum allowed length for this slash command option. Only valid for <see cref="string"/> parameters.
+/// </remarks>
 [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
-public class MinimumLengthAttribute : Attribute
+public class MinimumLengthAttribute(int value) : Attribute
 {
     /// <summary>
     /// The value.
     /// </summary>
-    public int Value { get; internal set; }
-
-    /// <summary>
-    /// Sets a minimum allowed length for this slash command option. Only valid for <see cref="string"/> parameters.
-    /// </summary>
-    public MinimumLengthAttribute(int value) => this.Value = value;
+    public int Value { get; internal set; } = value;
 }

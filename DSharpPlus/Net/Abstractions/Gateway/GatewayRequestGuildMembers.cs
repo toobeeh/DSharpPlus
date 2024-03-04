@@ -4,10 +4,10 @@ using Newtonsoft.Json;
 
 namespace DSharpPlus.Net.Abstractions;
 
-internal sealed class GatewayRequestGuildMembers
+internal sealed class GatewayRequestGuildMembers(DiscordGuild guild)
 {
     [JsonProperty("guild_id")]
-    public ulong GuildId { get; }
+    public ulong GuildId { get; } = guild.Id;
 
     [JsonProperty("query", NullValueHandling = NullValueHandling.Ignore)]
     public string Query { get; set; } = null;
@@ -23,6 +23,4 @@ internal sealed class GatewayRequestGuildMembers
 
     [JsonProperty("nonce", NullValueHandling = NullValueHandling.Ignore)]
     public string Nonce { get; internal set; }
-
-    public GatewayRequestGuildMembers(DiscordGuild guild) => this.GuildId = guild.Id;
 }

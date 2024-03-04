@@ -3,35 +3,28 @@ namespace DSharpPlus.Net;
 /// <summary>
 /// Represents a network connection endpoint.
 /// </summary>
-public struct ConnectionEndpoint
+/// <remarks>
+/// Creates a new endpoint structure.
+/// </remarks>
+/// <param name="hostname">Hostname to connect to.</param>
+/// <param name="port">Port to use for connection.</param>
+/// <param name="secured">Whether the connection should be secured (https/wss).</param>
+public struct ConnectionEndpoint(string hostname, int port, bool secured = false)
 {
     /// <summary>
     /// Gets or sets the hostname associated with this endpoint.
     /// </summary>
-    public string Hostname { get; set; }
+    public string Hostname { get; set; } = hostname;
 
     /// <summary>
     /// Gets or sets the port associated with this endpoint.
     /// </summary>
-    public int Port { get; set; }
+    public int Port { get; set; } = port;
 
     /// <summary>
     /// Gets or sets the secured status of this connection.
     /// </summary>
-    public bool Secured { get; set; }
-
-    /// <summary>
-    /// Creates a new endpoint structure.
-    /// </summary>
-    /// <param name="hostname">Hostname to connect to.</param>
-    /// <param name="port">Port to use for connection.</param>
-    /// <param name="secured">Whether the connection should be secured (https/wss).</param>
-    public ConnectionEndpoint(string hostname, int port, bool secured = false)
-    {
-        this.Hostname = hostname;
-        this.Port = port;
-        this.Secured = secured;
-    }
+    public bool Secured { get; set; } = secured;
 
     /// <summary>
     /// Gets the hash code of this endpoint.

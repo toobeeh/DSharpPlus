@@ -4,7 +4,7 @@ using DSharpPlus.VoiceNext.Codec;
 
 namespace DSharpPlus.VoiceNext.Entities;
 
-internal class AudioSender : IDisposable
+internal class AudioSender(uint ssrc, OpusDecoder decoder) : IDisposable
 {
     // starting the counter a full wrap ahead handles an edge case where the VERY first packets
     // we see are right around the wraparound line.
@@ -18,17 +18,11 @@ internal class AudioSender : IDisposable
         AssumeNextHighSequenceIsOutOfOrder,
     }
 
-    public uint SSRC { get; }
+    public uint SSRC { get; } = ssrc;
     public ulong Id => this.User?.Id ?? 0;
-    public OpusDecoder Decoder { get; }
+    public OpusDecoder Decoder { get; } = decoder;
     public DiscordUser User { get; set; } = null;
     public ulong? LastTrueSequence { get; set; } = null;
-
-    public AudioSender(uint ssrc, OpusDecoder decoder)
-    {
-        this.SSRC = ssrc;
-        this.Decoder = decoder;
-    }
 
     public void Dispose() => this.Decoder?.Dispose();
 

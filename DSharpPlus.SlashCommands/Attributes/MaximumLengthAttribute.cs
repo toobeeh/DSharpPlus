@@ -28,16 +28,14 @@ namespace DSharpPlus.SlashCommands;
 /// <summary>
 /// Sets a maximum allowed length for this slash command option. Only valid for <see cref="string"/> parameters.
 /// </summary>
+/// <remarks>
+/// Sets a maximum allowed length for this slash command option. Only valid for <see cref="string"/> parameters.
+/// </remarks>
 [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
-public class MaximumLengthAttribute : Attribute
+public class MaximumLengthAttribute(int value) : Attribute
 {
     /// <summary>
     /// The value.
     /// </summary>
-    public int Value { get; internal set; }
-
-    /// <summary>
-    /// Sets a maximum allowed length for this slash command option. Only valid for <see cref="string"/> parameters.
-    /// </summary>
-    public MaximumLengthAttribute(int value) => this.Value = value;
+    public int Value { get; internal set; } = value;
 }

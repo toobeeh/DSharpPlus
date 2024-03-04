@@ -77,13 +77,9 @@ public static class LavalinkUtilities
 /// This class converts a big-endian stream to little-endian, and includes some helper methods
 /// for interacting with Lavaplayer/Lavalink.
 /// </summary>
-internal class JavaBinaryReader : BinaryReader
+internal class JavaBinaryReader(Stream ms) : BinaryReader(ms, _utf8NoBom)
 {
     private static readonly Encoding _utf8NoBom = new UTF8Encoding();
-
-    public JavaBinaryReader(Stream ms) : base(ms, _utf8NoBom)
-    {
-    }
 
     // https://docs.oracle.com/javase/7/docs/api/java/io/DataInput.html#readUTF()
     public string ReadJavaUtf8()

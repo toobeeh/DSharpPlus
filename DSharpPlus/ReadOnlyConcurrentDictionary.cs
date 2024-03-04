@@ -10,15 +10,13 @@ namespace DSharpPlus;
 /// </summary>
 /// <typeparam name="TKey">The type of keys in the dictionary.</typeparam>
 /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
-internal readonly struct ReadOnlyConcurrentDictionary<TKey, TValue> : IReadOnlyDictionary<TKey, TValue>
+/// <remarks>
+/// Creates a new read-only view of the given dictionary.
+/// </remarks>
+/// <param name="underlyingDict">Dictionary to create a view over.</param>
+internal readonly struct ReadOnlyConcurrentDictionary<TKey, TValue>(ConcurrentDictionary<TKey, TValue> underlyingDict) : IReadOnlyDictionary<TKey, TValue>
 {
-    private readonly ConcurrentDictionary<TKey, TValue> _underlyingDict;
-
-    /// <summary>
-    /// Creates a new read-only view of the given dictionary.
-    /// </summary>
-    /// <param name="underlyingDict">Dictionary to create a view over.</param>
-    public ReadOnlyConcurrentDictionary(ConcurrentDictionary<TKey, TValue> underlyingDict) => this._underlyingDict = underlyingDict;
+    private readonly ConcurrentDictionary<TKey, TValue> _underlyingDict = underlyingDict;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => this._underlyingDict.GetEnumerator();

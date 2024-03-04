@@ -854,10 +854,8 @@ public class DiscordGuild : SnowflakeObject, IEquatable<DiscordGuild>
 
         if (mdl.Icon.HasValue && mdl.Icon.Value != null)
         {
-            using (ImageTool imgtool = new(mdl.Icon.Value))
-            {
-                iconb64 = imgtool.GetBase64();
-            }
+            using ImageTool imgtool = new(mdl.Icon.Value);
+            iconb64 = imgtool.GetBase64();
         }
         else if (mdl.Icon.HasValue)
         {
@@ -868,10 +866,8 @@ public class DiscordGuild : SnowflakeObject, IEquatable<DiscordGuild>
 
         if (mdl.Splash.HasValue && mdl.Splash.Value != null)
         {
-            using (ImageTool imgtool = new(mdl.Splash.Value))
-            {
-                splashb64 = imgtool.GetBase64();
-            }
+            using ImageTool imgtool = new(mdl.Splash.Value);
+            splashb64 = imgtool.GetBase64();
         }
         else if (mdl.Splash.HasValue)
         {
@@ -888,10 +884,8 @@ public class DiscordGuild : SnowflakeObject, IEquatable<DiscordGuild>
             }
             else
             {
-                using (ImageTool imgtool = new(mdl.Banner.Value))
-                {
-                    bannerb64 = imgtool.GetBase64();
-                }
+                using ImageTool imgtool = new(mdl.Banner.Value);
+                bannerb64 = imgtool.GetBase64();
             }
         }
 

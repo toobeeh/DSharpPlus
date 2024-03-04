@@ -4,97 +4,61 @@ using Newtonsoft.Json;
 
 namespace DSharpPlus.Lavalink.Entities;
 
-internal sealed class LavalinkConfigureResume : LavalinkPayload
+internal sealed class LavalinkConfigureResume(string key, int timeout) : LavalinkPayload("configureResuming")
 {
     [JsonProperty("key")]
-    public string Key { get; }
+    public string Key { get; } = key;
 
     [JsonProperty("timeout")]
-    public int Timeout { get; }
-
-    public LavalinkConfigureResume(string key, int timeout)
-        : base("configureResuming")
-    {
-        this.Key = key;
-        this.Timeout = timeout;
-    }
+    public int Timeout { get; } = timeout;
 }
 
-internal sealed class LavalinkDestroy : LavalinkPayload
+internal sealed class LavalinkDestroy(LavalinkGuildConnection lvl) : LavalinkPayload("destroy", lvl.GuildIdString)
 {
-    public LavalinkDestroy(LavalinkGuildConnection lvl)
-        : base("destroy", lvl.GuildIdString)
-    { }
 }
 
-internal sealed class LavalinkPlay : LavalinkPayload
+internal sealed class LavalinkPlay(LavalinkGuildConnection lvl, LavalinkTrack track) : LavalinkPayload("play", lvl.GuildIdString)
 {
     [JsonProperty("track")]
-    public string Track { get; }
-
-    public LavalinkPlay(LavalinkGuildConnection lvl, LavalinkTrack track)
-        : base("play", lvl.GuildIdString) => this.Track = track.TrackString;
+    public string Track { get; } = track.TrackString;
 }
 
-internal sealed class LavalinkPlayPartial : LavalinkPayload
+internal sealed class LavalinkPlayPartial(LavalinkGuildConnection lvl, LavalinkTrack track, TimeSpan start, TimeSpan stop) : LavalinkPayload("play", lvl.GuildIdString)
 {
     [JsonProperty("track")]
-    public string Track { get; }
+    public string Track { get; } = track.TrackString;
 
     [JsonProperty("startTime")]
-    public long StartTime { get; }
+    public long StartTime { get; } = (long)start.TotalMilliseconds;
 
     [JsonProperty("endTime")]
-    public long StopTime { get; }
-
-    public LavalinkPlayPartial(LavalinkGuildConnection lvl, LavalinkTrack track, TimeSpan start, TimeSpan stop)
-        : base("play", lvl.GuildIdString)
-    {
-        this.Track = track.TrackString;
-        this.StartTime = (long)start.TotalMilliseconds;
-        this.StopTime = (long)stop.TotalMilliseconds;
-    }
+    public long StopTime { get; } = (long)stop.TotalMilliseconds;
 }
 
-internal sealed class LavalinkPause : LavalinkPayload
+internal sealed class LavalinkPause(LavalinkGuildConnection lvl, bool pause) : LavalinkPayload("pause", lvl.GuildIdString)
 {
     [JsonProperty("pause")]
-    public bool Pause { get; }
-
-    public LavalinkPause(LavalinkGuildConnection lvl, bool pause)
-        : base("pause", lvl.GuildIdString) => this.Pause = pause;
+    public bool Pause { get; } = pause;
 }
 
-internal sealed class LavalinkStop : LavalinkPayload
+internal sealed class LavalinkStop(LavalinkGuildConnection lvl) : LavalinkPayload("stop", lvl.GuildIdString)
 {
-    public LavalinkStop(LavalinkGuildConnection lvl)
-        : base("stop", lvl.GuildIdString)
-    { }
 }
 
-internal sealed class LavalinkSeek : LavalinkPayload
+internal sealed class LavalinkSeek(LavalinkGuildConnection lvl, TimeSpan position) : LavalinkPayload("seek", lvl.GuildIdString)
 {
     [JsonProperty("position")]
-    public long Position { get; }
-
-    public LavalinkSeek(LavalinkGuildConnection lvl, TimeSpan position)
-        : base("seek", lvl.GuildIdString) => this.Position = (long)position.TotalMilliseconds;
+    public long Position { get; } = (long)position.TotalMilliseconds;
 }
 
-internal sealed class LavalinkVolume : LavalinkPayload
+internal sealed class LavalinkVolume(LavalinkGuildConnection lvl, int volume) : LavalinkPayload("volume", lvl.GuildIdString)
 {
     [JsonProperty("volume")]
-    public int Volume { get; }
-
-    public LavalinkVolume(LavalinkGuildConnection lvl, int volume)
-        : base("volume", lvl.GuildIdString) => this.Volume = volume;
+    public int Volume { get; } = volume;
 }
 
-internal sealed class LavalinkEqualizer : LavalinkPayload
+internal sealed class LavalinkEqualizer(LavalinkGuildConnection lvl, IEnumerable<LavalinkBandAdjustment> bands) : LavalinkPayload("equalizer", lvl.GuildIdString)
 {
     [JsonProperty("bands")]
-    public IEnumerable<LavalinkBandAdjustment> Bands { get; }
-
-    public LavalinkEqualizer(LavalinkGuildConnection lvl, IEnumerable<LavalinkBandAdjustment> bands)
-        : base("equalizer", lvl.GuildIdString) => this.Bands = bands;
+    public IEnumerable<LavalinkBandAdjustment> Bands { get; } = bands;
 }

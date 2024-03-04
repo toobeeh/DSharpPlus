@@ -9,41 +9,34 @@ namespace DSharpPlus.SlashCommands.Attributes;
 /// <summary>
 /// Defines a cooldown for this command. This allows you to define how many times can users execute a specific command
 /// </summary>
+/// <remarks>
+/// Defines a cooldown for this command. This means that users will be able to use the command a specific number of times before they have to wait to use it again.
+/// </remarks>
+/// <param name="maxUses">Number of times the command can be used before triggering a cooldown.</param>
+/// <param name="resetAfter">Number of seconds after which the cooldown is reset.</param>
+/// <param name="bucketType">Type of cooldown bucket. This allows controlling whether the bucket will be cooled down per user, guild, channel, or globally.</param>
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
-public sealed class SlashCooldownAttribute : SlashCheckBaseAttribute
+public sealed class SlashCooldownAttribute(int maxUses, double resetAfter, SlashCooldownBucketType bucketType) : SlashCheckBaseAttribute
 {
     /// <summary>
     /// Gets the maximum number of uses before this command triggers a cooldown for its bucket.
     /// </summary>
-    public int MaxUses { get; }
+    public int MaxUses { get; } = maxUses;
 
     /// <summary>
     /// Gets the time after which the cooldown is reset.
     /// </summary>
-    public TimeSpan Reset { get; }
+    public TimeSpan Reset { get; } = TimeSpan.FromSeconds(resetAfter);
 
     /// <summary>
     /// Gets the type of the cooldown bucket. This determines how cooldowns are applied.
     /// </summary>
-    public SlashCooldownBucketType BucketType { get; }
+    public SlashCooldownBucketType BucketType { get; } = bucketType;
 
     /// <summary>
     /// Gets the cooldown buckets for this command.
     /// </summary>
     private static readonly ConcurrentDictionary<string, SlashCommandCooldownBucket> _buckets = new();
-
-    /// <summary>
-    /// Defines a cooldown for this command. This means that users will be able to use the command a specific number of times before they have to wait to use it again.
-    /// </summary>
-    /// <param name="maxUses">Number of times the command can be used before triggering a cooldown.</param>
-    /// <param name="resetAfter">Number of seconds after which the cooldown is reset.</param>
-    /// <param name="bucketType">Type of cooldown bucket. This allows controlling whether the bucket will be cooled down per user, guild, channel, or globally.</param>
-    public SlashCooldownAttribute(int maxUses, double resetAfter, SlashCooldownBucketType bucketType)
-    {
-        this.MaxUses = maxUses;
-        this.Reset = TimeSpan.FromSeconds(resetAfter);
-        this.BucketType = bucketType;
-    }
 
     /// <summary>
     /// Gets a cooldown bucket for given command context.

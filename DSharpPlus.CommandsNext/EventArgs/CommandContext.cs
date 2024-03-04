@@ -136,18 +136,11 @@ public sealed class CommandContext
     public Task TriggerTypingAsync()
         => this.Channel.TriggerTypingAsync();
 
-    internal struct ServiceContext : IDisposable
+    internal struct ServiceContext(IServiceProvider services, IServiceScope scope) : IDisposable
     {
-        public IServiceProvider Provider { get; }
-        public IServiceScope Scope { get; }
-        public bool IsInitialized { get; }
-
-        public ServiceContext(IServiceProvider services, IServiceScope scope)
-        {
-            this.Provider = services;
-            this.Scope = scope;
-            this.IsInitialized = true;
-        }
+        public IServiceProvider Provider { get; } = services;
+        public IServiceScope Scope { get; } = scope;
+        public bool IsInitialized { get; } = true;
 
         public void Dispose() => this.Scope?.Dispose();
     }

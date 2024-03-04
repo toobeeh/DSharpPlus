@@ -217,15 +217,9 @@ namespace DSharpPlus.Interactivity
         }
     }
 
-    public class Page
+    public class Page(string content = "", DiscordEmbedBuilder embed = null)
     {
-        public string Content { get; set; }
-        public DiscordEmbed Embed { get; set; }
-
-        public Page(string content = "", DiscordEmbedBuilder embed = null)
-        {
-            this.Content = content;
-            this.Embed = embed?.Build();
-        }
+        public string Content { get; set; } = content;
+        public DiscordEmbed Embed { get; set; } = embed?.Build();
     }
 }

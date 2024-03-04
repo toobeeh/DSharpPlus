@@ -351,17 +351,15 @@ public enum Permissions : long
 /// <summary>
 /// Defines a readable name for this permission.
 /// </summary>
+/// <remarks>
+/// Defines a readable name for this permission.
+/// </remarks>
+/// <param name="str">Readable name for this permission.</param>
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-public sealed class PermissionStringAttribute : Attribute
+public sealed class PermissionStringAttribute(string str) : Attribute
 {
     /// <summary>
     /// Gets the readable name for this permission.
     /// </summary>
-    public string String { get; }
-
-    /// <summary>
-    /// Defines a readable name for this permission.
-    /// </summary>
-    /// <param name="str">Readable name for this permission.</param>
-    public PermissionStringAttribute(string str) => this.String = str;
+    public string String { get; } = str;
 }

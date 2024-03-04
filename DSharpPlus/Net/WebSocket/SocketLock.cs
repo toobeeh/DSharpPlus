@@ -6,23 +6,15 @@ namespace DSharpPlus.Net.WebSocket;
 
 // Licensed from Clyde.NET (etc; I don't know how licenses work)
 
-internal sealed class SocketLock : IDisposable
+internal sealed class SocketLock(ulong appId, int maxConcurrency) : IDisposable
 {
-    public ulong ApplicationId { get; }
+    public ulong ApplicationId { get; } = appId;
 
-    private SemaphoreSlim LockSemaphore { get; }
-    private CancellationTokenSource TimeoutCancelSource { get; set; }
+    private SemaphoreSlim LockSemaphore { get; } = new SemaphoreSlim(maxConcurrency);
+    private CancellationTokenSource TimeoutCancelSource { get; set; } = null;
     private CancellationToken TimeoutCancel => this.TimeoutCancelSource.Token;
     private Task UnlockTask { get; set; }
-    private int MaxConcurrency { get; set; }
-
-    public SocketLock(ulong appId, int maxConcurrency)
-    {
-        this.ApplicationId = appId;
-        this.TimeoutCancelSource = null;
-        this.MaxConcurrency = maxConcurrency;
-        this.LockSemaphore = new SemaphoreSlim(maxConcurrency);
-    }
+    private int MaxConcurrency { get; set; } = maxConcurrency;
 
     public async Task LockAsync()
     {

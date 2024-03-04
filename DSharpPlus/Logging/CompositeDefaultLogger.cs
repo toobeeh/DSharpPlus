@@ -5,16 +5,11 @@ using Microsoft.Extensions.Logging;
 
 namespace DSharpPlus;
 
-internal class CompositeDefaultLogger : ILogger<BaseDiscordClient>
+internal class CompositeDefaultLogger(IEnumerable<ILoggerProvider> providers) : ILogger<BaseDiscordClient>
 {
-    private IEnumerable<ILogger<BaseDiscordClient>> Loggers { get; }
-
-    public CompositeDefaultLogger(IEnumerable<ILoggerProvider> providers)
-    {
-        this.Loggers = providers.Select(x => x.CreateLogger(typeof(BaseDiscordClient).FullName))
+    private IEnumerable<ILogger<BaseDiscordClient>> Loggers { get; } = providers.Select(x => x.CreateLogger(typeof(BaseDiscordClient).FullName))
             .OfType<ILogger<BaseDiscordClient>>()
             .ToList();
-    }
 
     public bool IsEnabled(LogLevel logLevel)
         => true;

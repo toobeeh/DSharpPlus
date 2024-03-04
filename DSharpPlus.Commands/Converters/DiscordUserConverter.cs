@@ -13,16 +13,14 @@ using DSharpPlus.Exceptions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-public partial class DiscordUserConverter : ISlashArgumentConverter<DiscordUser>, ITextArgumentConverter<DiscordUser>
+public partial class DiscordUserConverter(ILogger<DiscordUserConverter>? logger = null) : ISlashArgumentConverter<DiscordUser>, ITextArgumentConverter<DiscordUser>
 {
     [GeneratedRegex("""^<@!?(\d+?)>$""", RegexOptions.Compiled | RegexOptions.ECMAScript)]
     private static partial Regex _getMemberRegex();
 
     public ApplicationCommandOptionType ParameterType { get; init; } = ApplicationCommandOptionType.User;
     public bool RequiresText { get; init; } = true;
-    private readonly ILogger<DiscordUserConverter> _logger;
-
-    public DiscordUserConverter(ILogger<DiscordUserConverter>? logger = null) => this._logger = logger ?? NullLogger<DiscordUserConverter>.Instance;
+    private readonly ILogger<DiscordUserConverter> _logger = logger ?? NullLogger<DiscordUserConverter>.Instance;
 
     public async Task<Optional<DiscordUser>> ConvertAsync(ConverterContext context, MessageCreateEventArgs eventArgs)
     {

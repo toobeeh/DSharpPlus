@@ -9,22 +9,16 @@ namespace DSharpPlus.CommandsNext.Converters;
 /// <summary>
 /// Default CommandsNext help formatter.
 /// </summary>
-public class DefaultHelpFormatter : BaseHelpFormatter
+/// <remarks>
+/// Creates a new default help formatter.
+/// </remarks>
+/// <param name="ctx">Context in which this formatter is being invoked.</param>
+public class DefaultHelpFormatter(CommandContext ctx) : BaseHelpFormatter(ctx)
 {
-    public DiscordEmbedBuilder EmbedBuilder { get; }
-    private Command? Command { get; set; }
-
-    /// <summary>
-    /// Creates a new default help formatter.
-    /// </summary>
-    /// <param name="ctx">Context in which this formatter is being invoked.</param>
-    public DefaultHelpFormatter(CommandContext ctx)
-        : base(ctx)
-    {
-        this.EmbedBuilder = new DiscordEmbedBuilder()
+    public DiscordEmbedBuilder EmbedBuilder { get; } = new DiscordEmbedBuilder()
             .WithTitle("Help")
             .WithColor(0x007FFF);
-    }
+    private Command? Command { get; set; }
 
     /// <summary>
     /// Sets the command this help message will be for.

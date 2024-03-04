@@ -3,16 +3,10 @@ namespace DSharpPlus.Net;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-internal class PreemptiveRatelimitException : Exception
+[method: SetsRequiredMembers]
+internal class PreemptiveRatelimitException(string scope, TimeSpan resetAfter) : Exception
 {
-    public required string Scope { get; set; }
+    public required string Scope { get; set; } = scope;
 
-    public required TimeSpan ResetAfter { get; set; }
-
-    [SetsRequiredMembers]
-    public PreemptiveRatelimitException(string scope, TimeSpan resetAfter)
-    {
-        this.Scope = scope;
-        this.ResetAfter = resetAfter;
-    }
+    public required TimeSpan ResetAfter { get; set; } = resetAfter;
 }

@@ -9,23 +9,30 @@ namespace DSharpPlus.CommandsNext.Attributes;
 /// <summary>
 /// Defines that usage of this command is restricted to members with specified role. Note that it's much preferred to restrict access using <see cref="RequirePermissionsAttribute"/>.
 /// </summary>
+/// <remarks>
+/// Defines that usage of this command is restricted to members with the specified role.
+/// Note that it is much preferred to restrict access using <see cref="RequirePermissionsAttribute"/>.
+/// </remarks>
+/// <param name="checkMode">Role checking mode.</param>
+/// <param name="roleNames">Names of the role to be verified by this check.</param>
+/// <param name="roleIds">IDs of the roles to be verified by this check.</param>
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-public sealed class RequireRolesAttribute : CheckBaseAttribute
+public sealed class RequireRolesAttribute(RoleCheckMode checkMode, string[] roleNames, ulong[] roleIds) : CheckBaseAttribute
 {
     /// <summary>
     /// Gets the names of roles required to execute this command.
     /// </summary>
-    public IReadOnlyList<string> RoleNames { get; }
+    public IReadOnlyList<string> RoleNames { get; } = new ReadOnlyCollection<string>(roleNames);
 
     /// <summary>
     /// Gets the IDs of roles required to execute this command.
     /// </summary>
-    public IReadOnlyList<ulong> RoleIds { get; }
+    public IReadOnlyList<ulong> RoleIds { get; } = new ReadOnlyCollection<ulong>(roleIds);
 
     /// <summary>
     /// Gets the role checking mode. Refer to <see cref="RoleCheckMode"/> for more information.
     /// </summary>
-    public RoleCheckMode CheckMode { get; }
+    public RoleCheckMode CheckMode { get; } = checkMode;
 
     /// <summary>
     /// Defines that usage of this command is restricted to members with specified role. Note that it's much preferred to restrict access using <see cref="RequirePermissionsAttribute"/>.
@@ -45,20 +52,6 @@ public sealed class RequireRolesAttribute : CheckBaseAttribute
     public RequireRolesAttribute(RoleCheckMode checkMode, params ulong[] roleIds)
         : this(checkMode, Array.Empty<string>(), roleIds)
     { }
-
-    /// <summary>
-    /// Defines that usage of this command is restricted to members with the specified role.
-    /// Note that it is much preferred to restrict access using <see cref="RequirePermissionsAttribute"/>.
-    /// </summary>
-    /// <param name="checkMode">Role checking mode.</param>
-    /// <param name="roleNames">Names of the role to be verified by this check.</param>
-    /// <param name="roleIds">IDs of the roles to be verified by this check.</param>
-    public RequireRolesAttribute(RoleCheckMode checkMode, string[] roleNames, ulong[] roleIds)
-    {
-        this.CheckMode = checkMode;
-        this.RoleIds = new ReadOnlyCollection<ulong>(roleIds);
-        this.RoleNames = new ReadOnlyCollection<string>(roleNames);
-    }
 
     public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help)
     {

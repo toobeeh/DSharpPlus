@@ -8,15 +8,13 @@ namespace DSharpPlus;
 /// Read-only view of a given <see cref="ISet{T}"/>.
 /// </summary>
 /// <typeparam name="T">Type of the items in the set.</typeparam>
-internal readonly struct ReadOnlySet<T> : IReadOnlyCollection<T>
+/// <remarks>
+/// Creates a new read-only view of the given set.
+/// </remarks>
+/// <param name="sourceSet">Set to create a view over.</param>
+internal readonly struct ReadOnlySet<T>(ISet<T> sourceSet) : IReadOnlyCollection<T>
 {
-    private readonly ISet<T> _underlyingSet;
-
-    /// <summary>
-    /// Creates a new read-only view of the given set.
-    /// </summary>
-    /// <param name="sourceSet">Set to create a view over.</param>
-    public ReadOnlySet(ISet<T> sourceSet) => this._underlyingSet = sourceSet;
+    private readonly ISet<T> _underlyingSet = sourceSet;
 
     /// <summary>
     /// Gets the number of items in the underlying set.
