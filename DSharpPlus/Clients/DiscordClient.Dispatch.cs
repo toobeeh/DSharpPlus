@@ -161,12 +161,12 @@ public sealed partial class DiscordClient
                 gid = (ulong)dat["guild_id"];
 
                 // discord fires this event inconsistently if the current user leaves a guild.
-                if (!this._guilds.ContainsKey(gid))
+                if (!this._guilds.TryGetValue(gid, out DiscordGuild? value))
                 {
                     return;
                 }
 
-                await this.OnGuildIntegrationsUpdateEventAsync(this._guilds[gid]);
+                await this.OnGuildIntegrationsUpdateEventAsync(value);
                 break;
 
             case "guild_audit_log_entry_create":
@@ -206,7 +206,7 @@ public sealed partial class DiscordClient
                 gid = (ulong)dat["guild_id"];
                 usr = dat["user"].ToDiscordObject<TransportUser>();
 
-                if (!this._guilds.ContainsKey(gid))
+                if (!this._guilds.TryGetValue(gid, out DiscordGuild? value))
                 {
                     // discord fires this event inconsistently if the current user leaves a guild.
                     if (usr.Id != this.CurrentUser.Id)
@@ -217,7 +217,7 @@ public sealed partial class DiscordClient
                     return;
                 }
 
-                await this.OnGuildMemberRemoveEventAsync(usr, this._guilds[gid]);
+                await this.OnGuildMemberRemoveEventAsync(usr, value);
                 break;
 
             case "guild_member_update":
@@ -1063,14 +1063,14 @@ public sealed partial class DiscordClient
     {
         DiscordGuild oldGuild;
 
-        if (!this._guilds.ContainsKey(guild.Id))
+        if (!this._guilds.TryGetValue(guild.Id, out DiscordGuild? value))
         {
             this._guilds[guild.Id] = guild;
             oldGuild = null;
         }
         else
         {
-            DiscordGuild gld = this._guilds[guild.Id];
+            DiscordGuild gld = value;
 
             oldGuild = new DiscordGuild
             {
@@ -1386,7 +1386,7 @@ public sealed partial class DiscordClient
 
         TransportMember[] members = dat["members"].ToDiscordObject<TransportMember[]>();
 
-        int memCount = members.Count();
+        int memCount = members.Length;
         for (int i = 0; i < memCount; i++)
         {
             DiscordMember mbr = new(members[i]) { Discord = this, _guild_id = guild.Id };
@@ -1416,7 +1416,7 @@ public sealed partial class DiscordClient
         {
             DiscordPresence[] presences = dat["presences"].ToDiscordObject<DiscordPresence[]>();
 
-            int presCount = presences.Count();
+            int presCount = presences.Length;
             for (int i = 0; i < presCount; i++)
             {
                 DiscordPresence xp = presences[i];

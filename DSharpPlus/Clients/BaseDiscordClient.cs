@@ -182,7 +182,7 @@ public abstract class BaseDiscordClient : IDisposable
             this.CurrentApplication = await this.GetCurrentApplicationAsync();
         }
 
-        if (this.Configuration.TokenType != TokenType.Bearer && this.InternalVoiceRegions.Count == 0)
+        if (this.Configuration.TokenType != TokenType.Bearer && this.InternalVoiceRegions.IsEmpty)
         {
             IReadOnlyList<DiscordVoiceRegion> vrs = await this.ListVoiceRegionsAsync();
             foreach (DiscordVoiceRegion xvr in vrs)

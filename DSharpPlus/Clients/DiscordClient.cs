@@ -896,7 +896,7 @@ public sealed partial class DiscordClient : BaseDiscordClient
             remaining -= lastCount;
             
             //We sort the returned guilds by ID so that they are in order in case Discord switches the order AGAIN.
-            DiscordGuild[] sortedGuildsArray = fetchedGuilds.ToArray();
+            DiscordGuild[] sortedGuildsArray = [.. fetchedGuilds];
             Array.Sort(sortedGuildsArray, (x, y) => x.Id.CompareTo(y.Id));
             
 
@@ -1057,14 +1057,15 @@ public sealed partial class DiscordClient : BaseDiscordClient
             return;
         }
 
-        if (!this._guilds.ContainsKey(newGuild.Id))
+        if (!this._guilds.TryGetValue(newGuild.Id, out DiscordGuild? value))
         {
-            this._guilds[newGuild.Id] = newGuild;
+            value = newGuild;
+            this._guilds[newGuild.Id] = value;
         }
 
-        DiscordGuild guild = this._guilds[newGuild.Id];
+        DiscordGuild guild = value;
 
-        if (newGuild._channels != null && newGuild._channels.Count > 0)
+        if (newGuild._channels != null && !newGuild._channels.IsEmpty)
         {
             foreach (DiscordChannel channel in newGuild._channels.Values)
             {
@@ -1082,7 +1083,7 @@ public sealed partial class DiscordClient : BaseDiscordClient
                 guild._channels[channel.Id] = channel;
             }
         }
-        if (newGuild._threads != null && newGuild._threads.Count > 0)
+        if (newGuild._threads != null && !newGuild._threads.IsEmpty)
         {
             foreach (DiscordThreadChannel thread in newGuild._threads.Values)
             {
