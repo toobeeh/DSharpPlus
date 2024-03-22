@@ -14,8 +14,8 @@ namespace DSharpPlus.Net.Ratelimiting;
 
 internal class RatelimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDisposable
 {
-    private readonly RateLimitBucket globalBucket;
-    private readonly ConcurrentDictionary<string, RateLimitBucket> buckets = [];
+    private readonly RatelimitBucket globalBucket;
+    private readonly ConcurrentDictionary<string, RatelimitBucket> buckets = [];
     private readonly ConcurrentDictionary<string, string> routeHashes = [];
 
     private readonly ILogger logger;
@@ -23,7 +23,7 @@ internal class RatelimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
 
     private bool cancel = false;
 
-    public RatelimitStrategy(ILogger logger, int waitingForHashMilliseconds = 200)
+    public RatelimitStrategy(ILogger logger, int waitingForHashMilliseconds = 200, int maximumRestRequestsPerSecond = 15)
     {
         this.logger = logger;
         this.waitingForHashMilliseconds = waitingForHashMilliseconds;

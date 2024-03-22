@@ -28,7 +28,7 @@ internal sealed partial class RestClient : IDisposable
     private readonly ILogger logger;
     private readonly AsyncManualResetEvent globalRateLimitEvent;
     private readonly ResiliencePipeline<HttpResponseMessage> pipeline;
-    private readonly RateLimitStrategy rateLimitStrategy;
+    private readonly RatelimitStrategy ratelimitStrategy;
     private readonly RequestMetricsContainer metrics = new();
 
     private volatile bool _disposed;
@@ -82,7 +82,7 @@ internal sealed partial class RestClient : IDisposable
 
         this.globalRateLimitEvent = new AsyncManualResetEvent(true);
 
-        this.rateLimitStrategy = new(logger, waitingForHashMilliseconds, maximumRequestsPerSecond);
+        this.ratelimitStrategy = new(logger, waitingForHashMilliseconds, maximumRequestsPerSecond);
 
         ResiliencePipelineBuilder<HttpResponseMessage> builder = new();
 
@@ -96,7 +96,7 @@ internal sealed partial class RestClient : IDisposable
                 MaxRetryAttempts = maxRetries
             }
         )
-        .AddStrategy(_ => rateLimitStrategy, new RatelimitOptions());
+        .AddStrategy(_ => ratelimitStrategy, new RatelimitOptions());
 
         this.pipeline = builder.Build();
     }
@@ -229,7 +229,7 @@ internal sealed partial class RestClient : IDisposable
         this._disposed = true;
 
         this.globalRateLimitEvent.Reset();
-        this.rateLimitStrategy.Dispose();
+        this.ratelimitStrategy.Dispose();
 
         try
         {
