@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 using DSharpPlus.Entities;
 using DSharpPlus.Entities.AuditLogs;
+using DSharpPlus.Metrics;
 using DSharpPlus.Net.Abstractions;
 using DSharpPlus.Net.Serialization;
 
@@ -48,6 +49,10 @@ public sealed class DiscordApiClient
     
     internal DiscordApiClient(RestClient rest)
         => this._rest = rest;
+
+    /// <inheritdoc cref="RestClient.GetRequestMetrics(bool)"/>
+    public RequestMetricsCollection GetRequestMetrics(bool sinceLastCall = false)
+        => this._rest.GetRequestMetrics(sinceLastCall);
 
     private DiscordMessage PrepareMessage(JToken msgRaw)
     {
@@ -579,7 +584,7 @@ public sealed class DiscordApiClient
         _ = await this._rest.ExecuteRequestAsync(request);
     }
 
-    internal async ValueTask<DiscordMember> AddGuildMemberAsync
+    internal async ValueTask<DiscordMember?> AddGuildMemberAsync
     (
         ulong guildId,
         ulong userId,
@@ -602,14 +607,24 @@ public sealed class DiscordApiClient
         RestRequest request = new()
         {
             Route = $"{Endpoints.GUILDS}/{guildId}/{Endpoints.MEMBERS}/:user_id",
-            Url = $"{Endpoints.GUILDS}/{guildId}/{Endpoints.MEMBERS}/:{userId}",
+            Url = $"{Endpoints.GUILDS}/{guildId}/{Endpoints.MEMBERS}/{userId}",
             Method = HttpMethod.Put,
             Payload = DiscordJson.SerializeObject(payload)
         };
 
         RestResponse res = await this._rest.ExecuteRequestAsync(request);
+        
+        if (res.ResponseCode == HttpStatusCode.NoContent)
+        {
+            // User was already in the guild, Discord doesn't return the member object in this case
+            return null;
+        }
 
         TransportMember transport = JsonConvert.DeserializeObject<TransportMember>(res.Response!)!;
+        
+        DiscordUser usr = new(transport.User) { Discord = this._discord! };
+
+        this._discord!.UpdateUserCache(usr);
 
         return new DiscordMember(transport) { Discord = this._discord!, _guild_id = guildId };
     }
@@ -2389,7 +2404,7 @@ public sealed class DiscordApiClient
 
         if (files is not null)
         {
-            foreach (DiscordMessageFile? file in files.Where(x => x.ResetPositionTo.HasValue))
+            foreach (DiscordMessageFile file in files.Where(x => x.ResetPositionTo.HasValue))
             {
                 file.Stream.Position = file.ResetPositionTo!.Value;
             }
@@ -3575,8 +3590,45 @@ public sealed class DiscordApiClient
         }
         else
         {
-            return new ReadOnlyCollection<DiscordGuild>(JsonConvert.DeserializeObject<List<DiscordGuild>>(res.Response!)!);
+            List<DiscordGuild> guildsRaw = JsonConvert.DeserializeObject<List<DiscordGuild>>(res.Response!)!.ToList();
+            foreach (DiscordGuild guild in guildsRaw)
+            {
+                guild.Discord = this._discord!;
+
+            }
+            return new ReadOnlyCollection<DiscordGuild>(guildsRaw);
         }
+    }
+    
+    internal async ValueTask<DiscordMember> GetCurrentUserGuildMemberAsync
+    (
+        ulong guildId
+    )
+    {
+        string route = $"{Endpoints.USERS}/{Endpoints.ME}/{Endpoints.GUILDS}/{guildId}/member";
+
+        RestRequest request = new()
+        {
+            Route = route,
+            Url = route,
+            Method = HttpMethod.Get
+        };
+
+        RestResponse res = await this._rest.ExecuteRequestAsync(request);
+
+        TransportMember tm = JsonConvert.DeserializeObject<TransportMember>(res.Response!)!;
+
+        DiscordUser usr = new(tm.User)
+        {
+            Discord = this._discord!
+        };
+        _ = this._discord!.UpdateUserCache(usr);
+
+        return new DiscordMember(tm)
+        {
+            Discord = this._discord,
+            _guild_id = guildId
+        };
     }
 
     internal async ValueTask ModifyGuildMemberAsync
@@ -5815,7 +5867,7 @@ public sealed class DiscordApiClient
             DiscordMessage ret = JsonConvert.DeserializeObject<DiscordMessage>(res.Response!)!;
             ret.Discord = this._discord!;
 
-            foreach (DiscordMessageFile? file in builder.Files.Where(x => x.ResetPositionTo.HasValue))
+            foreach (DiscordMessageFile file in builder.Files.Where(x => x.ResetPositionTo.HasValue))
             {
                 file.Stream.Position = file.ResetPositionTo!.Value;
             }

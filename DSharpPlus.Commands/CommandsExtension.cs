@@ -15,7 +15,11 @@ using DSharpPlus.Commands.ContextChecks;
 using DSharpPlus.Commands.EventArgs;
 using DSharpPlus.Commands.Exceptions;
 using DSharpPlus.Commands.Processors;
+using DSharpPlus.Commands.Processors.MessageCommands;
+using DSharpPlus.Commands.Processors.SlashCommands;
+using DSharpPlus.Commands.Processors.TextCommands;
 using DSharpPlus.Commands.Processors.TextCommands.ContextChecks;
+using DSharpPlus.Commands.Processors.UserCommands;
 using DSharpPlus.Commands.Trees;
 using DSharpPlus.Commands.Trees.Attributes;
 using DSharpPlus.Entities;
@@ -41,12 +45,15 @@ public sealed class CommandsExtension : BaseExtension
     public IServiceProvider ServiceProvider { get; init; }
 
     /// <inheritdoc cref="CommandsConfiguration.DebugGuildId"/>
-    public ulong? DebugGuildId { get; init; }
+    public ulong DebugGuildId { get; init; }
 
     /// <inheritdoc cref="CommandsConfiguration.UseDefaultCommandErrorHandler"/>
     public bool UseDefaultCommandErrorHandler { get; init; }
 
-    public CommandExecutor CommandExecutor { get; init; } = new();
+    /// <inheritdoc cref="CommandsConfiguration.RegisterDefaultCommandProcessors"/>
+    public bool RegisterDefaultCommandProcessors { get; init; }
+
+    public ICommandExecutor CommandExecutor { get; init; }
 
     /// <summary>
     /// The registered commands that the users can execute.
@@ -54,7 +61,10 @@ public sealed class CommandsExtension : BaseExtension
     public IReadOnlyDictionary<string, Command> Commands { get; private set; } = new Dictionary<string, Command>();
     private readonly List<CommandBuilder> _commandBuilders = [];
 
-    public IReadOnlyDictionary<Type, ICommandProcessor> Processors { get; private set; } = new Dictionary<Type, ICommandProcessor>();
+    /// <summary>
+    /// All registered command processors.
+    /// </summary>
+    public IReadOnlyDictionary<Type, ICommandProcessor> Processors => this._processors;
     private readonly Dictionary<Type, ICommandProcessor> _processors = [];
 
     internal IReadOnlyList<ContextCheckMapEntry> Checks => this.checks;
@@ -69,19 +79,7 @@ public sealed class CommandsExtension : BaseExtension
     /// <summary>
     /// Executed everytime a command has errored.
     /// </summary>
-    public event AsyncEventHandler<CommandsExtension, CommandErroredEventArgs> CommandErrored
-    {
-        add
-        {
-            if (this.UseDefaultCommandErrorHandler)
-            {
-                this._commandErrored.Unregister(DefaultCommandErrorHandlerAsync);
-            }
-
-            this._commandErrored.Register(value);
-        }
-        remove => this._commandErrored.Unregister(value);
-    }
+    public event AsyncEventHandler<CommandsExtension, CommandErroredEventArgs> CommandErrored { add => this._commandErrored.Register(value); remove => this._commandErrored.Unregister(value); }
     internal readonly AsyncEvent<CommandsExtension, CommandErroredEventArgs> _commandErrored = new("COMMANDS_COMMAND_ERRORED", EverythingWentWrongErrorHandler);
 
     /// <summary>
@@ -100,10 +98,11 @@ public sealed class CommandsExtension : BaseExtension
         this.ServiceProvider = configuration.ServiceProvider;
         this.DebugGuildId = configuration.DebugGuildId;
         this.UseDefaultCommandErrorHandler = configuration.UseDefaultCommandErrorHandler;
+        this.RegisterDefaultCommandProcessors = configuration.RegisterDefaultCommandProcessors;
+        this.CommandExecutor = configuration.CommandExecutor;
         if (this.UseDefaultCommandErrorHandler)
         {
-            // We don't do `this.CommandErrored += DefaultCommandErrorHandlerAsync` because that'll immediately remove the event handler.
-            this._commandErrored.Register(DefaultCommandErrorHandlerAsync);
+            this.CommandErrored += DefaultCommandErrorHandlerAsync;
         }
 
         // Attempt to get the user defined logging, otherwise setup a null logger since the D#+ Default Logger is internal.
@@ -266,6 +265,13 @@ public sealed class CommandsExtension : BaseExtension
         }
 
         this.Commands = commands.ToFrozenDictionary();
+        if (this.RegisterDefaultCommandProcessors)
+        {
+            _processors.TryAdd(typeof(TextCommandProcessor), new TextCommandProcessor());
+            _processors.TryAdd(typeof(SlashCommandProcessor), new SlashCommandProcessor());
+            _processors.TryAdd(typeof(MessageCommandProcessor), new MessageCommandProcessor());
+            _processors.TryAdd(typeof(UserCommandProcessor), new UserCommandProcessor());
+        }
 
         foreach (ICommandProcessor processor in this._processors.Values)
         {
@@ -273,7 +279,6 @@ public sealed class CommandsExtension : BaseExtension
         }
     }
 
-    // TODO: Disposable pattern for processors
     /// <inheritdoc />
     public override void Dispose()
     {

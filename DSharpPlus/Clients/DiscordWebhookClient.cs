@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
+using DSharpPlus.Metrics;
 using DSharpPlus.Net;
 using Microsoft.Extensions.Logging;
 
@@ -59,7 +60,6 @@ public class DiscordWebhookClient
     /// </summary>
     /// <param name="proxy">Proxy to use for HTTP connections.</param>
     /// <param name="timeout">Timeout to use for HTTP requests. Set to <see cref="System.Threading.Timeout.InfiniteTimeSpan"/> to disable timeouts.</param>
-    /// <param name="useRelativeRateLimit">Whether to use the system clock for computing rate limit resets. See <see cref="DiscordConfiguration.UseRelativeRatelimit"/> for more details.</param>
     /// <param name="loggerFactory">The optional logging factory to use for this client.</param>
     /// <param name="minimumLogLevel">The minimum logging level for messages.</param>
     /// <param name="logTimestampFormat">The timestamp format to use for the logger.</param>
@@ -109,6 +109,10 @@ public class DiscordWebhookClient
 
         return wh;
     }
+
+    /// <inheritdoc cref="RestClient.GetRequestMetrics(bool)"/>
+    public RequestMetricsCollection GetRequestMetrics(bool sinceLastCall = false)
+        => this._apiclient.GetRequestMetrics(sinceLastCall);
 
     /// <summary>
     /// Registers a webhook with this client. This retrieves a webhook from webhook URL.

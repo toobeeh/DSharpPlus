@@ -14,8 +14,8 @@ namespace DSharpPlus.Net.Ratelimiting;
 
 internal class RatelimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDisposable
 {
-    private readonly RatelimitBucket globalBucket = new(50, 50, DateTime.UtcNow.AddSeconds(1));
-    private readonly ConcurrentDictionary<string, RatelimitBucket> buckets = [];
+    private readonly RateLimitBucket globalBucket;
+    private readonly ConcurrentDictionary<string, RateLimitBucket> buckets = [];
     private readonly ConcurrentDictionary<string, string> routeHashes = [];
 
     private readonly ILogger logger;
@@ -27,6 +27,8 @@ internal class RatelimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
     {
         this.logger = logger;
         this.waitingForHashMilliseconds = waitingForHashMilliseconds;
+
+        this.globalBucket = new(maximumRestRequestsPerSecond, maximumRestRequestsPerSecond, DateTime.UtcNow.AddSeconds(1));
 
         _ = CleanAsync();
     }
@@ -48,15 +50,7 @@ internal class RatelimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
 #pragma warning restore CS8600
 
         // get trace id for logging
-        Ulid traceId = default;
-        if (context.Properties.TryGetValue(new("trace-id"), out Ulid tid))
-        {
-            traceId = tid;
-        }
-        else
-        {
-            traceId = Ulid.Empty;
-        }
+        Ulid traceId = context.Properties.TryGetValue(new("trace-id"), out Ulid tid) ? tid : Ulid.Empty;
 
 
         // get global limit
@@ -89,6 +83,11 @@ internal class RatelimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
 
             Outcome<HttpResponseMessage> outcome = await action(context, state);
 
+            if (!exemptFromGlobalLimit)
+            {
+                this.globalBucket.CompleteReservation();
+            }
+
             if (outcome.Result is null)
             {
                 this.routeHashes.Remove(route, out _);
@@ -108,6 +107,11 @@ internal class RatelimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
         }
         else if (hash == "pending")
         {
+            if (!exemptFromGlobalLimit)
+            {
+                this.globalBucket.CancelReservation();
+            }
+
             return this.SynthesizeInternalResponse
             (
                 route,
@@ -131,6 +135,11 @@ internal class RatelimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
 
             if (!bucket.CheckNextRequest())
             {
+                if (!exemptFromGlobalLimit)
+                {
+                    this.globalBucket.CancelReservation();
+                }
+
                 return this.SynthesizeInternalResponse(route, bucket.Reset, "bucket", traceId);
             }
 
@@ -152,11 +161,26 @@ internal class RatelimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
 
                 if (outcome.Result is null)
                 {
+                    if (!exemptFromGlobalLimit)
+                    {
+                        this.globalBucket.CancelReservation();
+                    }
+
                     return outcome;
+                }
+
+                if (!exemptFromGlobalLimit)
+                {
+                    this.globalBucket.CompleteReservation();
                 }
             }
             catch (Exception e)
             {
+                if (!exemptFromGlobalLimit)
+                {
+                    this.globalBucket.CancelReservation();
+                }
+
                 bucket.CancelReservation();
                 return Outcome.FromException<HttpResponseMessage>(e);
             }
@@ -173,6 +197,7 @@ internal class RatelimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
     private Outcome<HttpResponseMessage> SynthesizeInternalResponse(string route, DateTime retry, string scope, Ulid traceId)
     {
         string waitingForRoute = scope == "route" ? " for route hash" : "";
+        string global = scope == "global" ? " global" : "";
 
         string traceIdString = "";
         if (this.logger.IsEnabled(LogLevel.Trace))
@@ -180,18 +205,21 @@ internal class RatelimitStrategy : ResilienceStrategy<HttpResponseMessage>, IDis
             traceIdString = $"Request ID:{traceId}: ";
         }
 
+        DateTime retryJittered = retry + TimeSpan.FromMilliseconds(Random.Shared.NextInt64(100));
+        
         logger.LogDebug
         (
             LoggerEvents.RatelimitPreemptive,
-            "{TraceId}Pre-emptive ratelimit for {Route} triggered - waiting{WaitingForRoute} until {Reset:O}.",
+            "{TraceId}Pre-emptive{Global} ratelimit for {Route} triggered - waiting{WaitingForRoute} until {Reset:O}.",
             traceIdString,
+            global,
             route,
             waitingForRoute,
-            retry
+            retryJittered
         );
 
         return Outcome.FromException<HttpResponseMessage>(
-            new PreemptiveRatelimitException(scope, retry - DateTime.UtcNow));
+            new PreemptiveRatelimitException(scope, retryJittered - DateTime.UtcNow));
     }
 
     private void UpdateRateLimitBuckets(HttpResponseMessage response, string oldHash, string route)
