@@ -171,8 +171,8 @@ internal sealed class RatelimitBucketContainer
         this.currentLength *= 2;
 
         this.isResizing = true;
-        this.slotTable.CopyTo(newSlotTable, 0);
-        this.entries.CopyTo(newEntries, 0);
+        Array.Copy(newSlotTable, this.slotTable, this.slotTable.Length);
+        Array.Copy(newEntries, this.entries, this.entries.Length);
 
         this.slotTable = newSlotTable;
         this.entries = newEntries;
